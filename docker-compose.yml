@@ -1,0 +1,16 @@
+version: '3'
+services:
+  postgres:
+    image: postgres:9.4
+    restart: always
+    container_name: 'chat-postgres'
+    env_file: ./containerConfig/psql.env
+    ports:
+      - 5432:5432
+    volumes:
+      - ./data/psql:/var/lib/postgresql/data
+  adminer:
+    image: adminer
+    restart: always
+    ports:
+      - 1234:8080
