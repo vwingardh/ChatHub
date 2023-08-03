@@ -1,19 +1,21 @@
-package com.chat.chat;
+package com.chat.chat.user;
 
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.CrossOrigin;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
-@RequestMapping("/api/users/")
+@RequestMapping("/api/")
 @CrossOrigin("*")
-public class Controller {
+public class UserController {
 
     @GetMapping("status")
     public ResponseEntity getStatus200() {
         return ResponseEntity.ok().build();
     }
 
+    @PostMapping("users")
+    public ChatUser createUser() {
+        ChatUser user = new ChatUser(1, "vileshocka");
+        return user;
+    }
 }
