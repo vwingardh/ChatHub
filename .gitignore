@@ -35,6 +35,5 @@ build/
 .env
 data
 target
-src/main/resources/application.yml
 containerConfig/psql.env
 .DS_Store
