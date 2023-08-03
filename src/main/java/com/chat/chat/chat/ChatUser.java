@@ -1,4 +1,4 @@
-package com.chat.chat.user;
+package com.chat.chat.chat;
 
 import jakarta.persistence.*;
 

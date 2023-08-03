@@ -1,17 +1,18 @@
 package com.chat.chat;
 
-import com.chat.chat.user.ChatUser;
-import com.chat.chat.user.UserController;
+import com.chat.chat.chat.ChatService;
+import com.chat.chat.chat.ChatUser;
+import com.chat.chat.chat.ChatController;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.TestTemplate;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-public class UserControllerTest {
+public class ChatControllerTest {
 
-    private final UserController controller = new UserController();
+    private final ChatService service = new ChatService();
+    private final ChatController controller = new ChatController(service);
+
 
     @Test
     public void getStatusCode200() {
