@@ -1,4 +1,4 @@
-package com.chat.chat.chat;
+package com.chat.chat.user;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -7,12 +7,12 @@ import org.springframework.web.bind.annotation.*;
 @RestController
 @RequestMapping("/api/")
 @CrossOrigin("*")
-public class ChatController {
+public class UserController {
 
-    private final ChatService service;
+    private final UserService service;
 
     @Autowired
-    public ChatController(ChatService service) {
+    public UserController(UserService service) {
         this.service = service;
     }
 
@@ -22,7 +22,7 @@ public class ChatController {
     }
 
     @PostMapping("users")
-    public ChatUser createUser() {
-        return service.createUser();
+    public ChatUser createUser(@RequestParam("username") String username) {
+        return service.createUser(username);
     }
 }

@@ -1,4 +1,4 @@
-package com.chat.chat.chat;
+package com.chat.chat.user;
 
 import jakarta.persistence.*;
 
@@ -7,9 +7,8 @@ import jakarta.persistence.*;
 public class ChatUser {
 
     @Id
-    @Column(name = "user_id")
-    @GeneratedValue(strategy = GenerationType.SEQUENCE)
-    private int id;
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
 
     @Column(name = "username", nullable = false)
     private String username;
@@ -18,12 +17,12 @@ public class ChatUser {
 
     }
 
-    public ChatUser(int id, String username) {
+    public ChatUser(Long id, String username) {
         this.id = id;
         this.username = username;
     }
 
-    public int getId() {
+    public Long getId() {
         return id;
     }
 
