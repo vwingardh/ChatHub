@@ -1,15 +1,15 @@
-package com.chat.chat.chat;
+package com.chat.chat.user;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 @Service
-public class ChatService {
+public class UserService {
 
-    private final ChatRepository chatRepo;
+    private final UserRepository chatRepo;
 
     @Autowired
-    public ChatService(ChatRepository chatRepo) {
+    public UserService(UserRepository chatRepo) {
         this.chatRepo = chatRepo;
     }
 
