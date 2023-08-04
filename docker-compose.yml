@@ -3,7 +3,7 @@ services:
   postgres:
     image: postgres:9.4
     restart: always
-    container_name: 'chat-postgres'
+    container_name: 'old-chat-postgres'
     env_file: ./containerConfig/psql.env
     ports:
       - 5432:5432

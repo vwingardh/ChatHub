@@ -1,21 +1,23 @@
-package com.chat.chat;
-
-import com.chat.chat.chat.ChatService;
-import com.chat.chat.chat.ChatUser;
-import com.chat.chat.chat.ChatController;
+import com.chat.chat.chat.*;
 import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.ResponseEntity;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
+@SpringBootTest
 public class ChatControllerTest {
 
-    private final ChatService service = new ChatService();
-    private final ChatController controller = new ChatController(service);
-
+    @Autowired
+    private ChatRepository chatRepo;
+    @Autowired
+    private ChatService service;
+    @Autowired
+    private ChatController controller;
 
     @Test
-    public void getStatusCode200() {
+    public void testGetStatusCode200() {
         ResponseEntity expected = ResponseEntity.ok().build();
 
         ResponseEntity actual = controller.getStatus200();
@@ -24,13 +26,13 @@ public class ChatControllerTest {
     }
 
     @Test
-    public void getUserFromCreateUser() {
-        ChatUser chatUser = new ChatUser(1, "vileshocka");
+    public void testGetUserFromCreateUser() {
+        ChatUser chatUser = new ChatUser("1", "vileshocka");
 
-        int expected = chatUser.getId();
+        String expected = chatUser.getId();
 
         ChatUser actual = controller.createUser();
-        int actualId = actual.getId();
+        String actualId = actual.getId();
 
         assertEquals(expected, actualId);
     }
