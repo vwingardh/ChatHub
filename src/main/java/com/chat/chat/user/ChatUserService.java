@@ -46,7 +46,11 @@ public class ChatUserService {
         return chatUser.get();
     }
 
-    public void deleteUserById(Long id) {
+    public void deleteUserById(Long id) throws NoSuchElementException {
+        Optional<ChatUser> user = repo.findById(id);
+        if (!user.isPresent()) {
+            throw new NoSuchElementException(String.format("User with id '%s' does not exist", id));
+        }
         repo.deleteById(id);
     }
 

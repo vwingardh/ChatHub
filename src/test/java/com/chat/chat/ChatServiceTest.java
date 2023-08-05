@@ -9,11 +9,10 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
 import org.springframework.boot.test.context.SpringBootTest;
-
 import java.util.List;
 import java.util.NoSuchElementException;
-
 import static org.junit.jupiter.api.Assertions.*;
+
 
 @SpringBootTest
 @Transactional
@@ -35,6 +34,34 @@ public class ChatServiceTest {
         service.deleteUserById(1L);
         service.deleteUserById(2L);
         service.deleteUserById(3L);
+    }
+
+    @Test
+    void testCreateUser() {
+        String expected = "test-user";
+        ChatUser createdUser = service.createUser("test-user");
+        assertNotNull(createdUser);
+        assertEquals(expected, createdUser.getUsername());
+    }
+
+    @Test
+    void testDeleteUserIsDeleted() {
+        ChatUser deletedUser = service.createUser("delete-user");
+        service.deleteUserById(deletedUser.getId());
+        Exception exception = assertThrows(NoSuchElementException.class, () -> service.getUserById(deletedUser.getId()));
+        String expected = "User with id '4' does not exist";
+        String actual = exception.getMessage();
+        assertEquals(expected, actual);
+    }
+
+    @Test
+    void testDeleteUserThrowsException() {
+        ChatUser deletedUser = service.createUser("delete-user");
+        service.deleteUserById(deletedUser.getId());
+        Exception exception = assertThrows(NoSuchElementException.class, () -> service.deleteUserById(deletedUser.getId()));
+        String expected = "User with id '4' does not exist";
+        String actual = exception.getMessage();
+        assertEquals(expected, actual);
     }
 
     @Test
