@@ -10,6 +10,8 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
 import org.springframework.boot.test.context.SpringBootTest;
+
+import java.util.ArrayList;
 import java.util.List;
 import java.util.NoSuchElementException;
 import static org.junit.jupiter.api.Assertions.*;
@@ -21,20 +23,26 @@ import static org.junit.jupiter.api.Assertions.*;
 public class ChatServiceTest {
 
     @Autowired
-    ChatUserService service;
+    protected ChatUserService service;
+
+    protected ArrayList<Long> userIds = new ArrayList<>();
+
 
     @BeforeEach
     void setupUsers() {
-        service.createUser("test1");
-        service.createUser("test2");
-        service.createUser("test3");
+        ChatUser user1 = service.createUser("test1");
+        ChatUser user2 = service.createUser("test2");
+        ChatUser user3 = service.createUser("test3");
+        userIds.add(user1.getId());
+        userIds.add(user2.getId());
+        userIds.add(user3.getId());
     }
 
     @AfterEach
     void cleanUpUsers() {
-        service.deleteUserById(1L);
-        service.deleteUserById(2L);
-        service.deleteUserById(3L);
+        for (Long id : userIds) {
+            service.deleteUserById(id);
+        }
     }
 
     @Test
@@ -66,7 +74,7 @@ public class ChatServiceTest {
         ChatUser deletedUser = service.createUser("delete-user");
         service.deleteUserById(deletedUser.getId());
         Exception exception = assertThrows(NoSuchElementException.class, () -> service.getUserById(deletedUser.getId()));
-        String expected = "User with id '4' does not exist";
+        String expected = String.format("User with id '%s' does not exist", deletedUser.getId());
         String actual = exception.getMessage();
         assertEquals(expected, actual);
     }
@@ -76,7 +84,7 @@ public class ChatServiceTest {
         ChatUser deletedUser = service.createUser("delete-user");
         service.deleteUserById(deletedUser.getId());
         Exception exception = assertThrows(NoSuchElementException.class, () -> service.deleteUserById(deletedUser.getId()));
-        String expected = "User with id '4' does not exist";
+        String expected = String.format("User with id '%s' does not exist", deletedUser.getId());
         String actual = exception.getMessage();
         assertEquals(expected, actual);
     }
@@ -90,8 +98,8 @@ public class ChatServiceTest {
 
     @Test
     void testGetUserByIdThrowNoSuchElementException() {
-        Exception exception = assertThrows(NoSuchElementException.class, () -> service.getUserById(4L));
-        String expected = "User with id '4' does not exist";
+        Exception exception = assertThrows(NoSuchElementException.class, () -> service.getUserById(255L));
+        String expected = "User with id '255' does not exist";
         String actual = exception.getMessage();
         assertEquals(expected, actual);
     }
