@@ -30,7 +30,7 @@
 //    private UserRepository chatRepo;
 //
 //    @Autowired
-//    private UserController controller;
+//    private ChatUserController controller;
 //
 //
 //    @Test

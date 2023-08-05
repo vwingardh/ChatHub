@@ -1,1 +1,0 @@
-INSERT INTO chat_user (user_id, username) VALUES ('1', 'vileshocka');
