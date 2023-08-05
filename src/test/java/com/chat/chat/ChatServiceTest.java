@@ -2,6 +2,8 @@ package com.chat.chat;
 
 import com.chat.chat.user.ChatUser;
 import com.chat.chat.user.ChatUserService;
+import jakarta.transaction.Transactional;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -9,9 +11,12 @@ import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabas
 import org.springframework.boot.test.context.SpringBootTest;
 
 import java.util.List;
-import static org.junit.jupiter.api.Assertions.assertEquals;
+import java.util.NoSuchElementException;
+
+import static org.junit.jupiter.api.Assertions.*;
 
 @SpringBootTest
+@Transactional
 @AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.ANY)
 public class ChatServiceTest {
 
@@ -19,15 +24,52 @@ public class ChatServiceTest {
     ChatUserService service;
 
     @BeforeEach
-    void createUsers() {
+    void setupUsers() {
         ChatUser user1 = service.createUser("test1");
         ChatUser user2 = service.createUser("test2");
         ChatUser user3 = service.createUser("test3");
     }
 
+    @AfterEach
+    void cleanUpUsers() {
+        service.deleteUserById(1L);
+        service.deleteUserById(2L);
+        service.deleteUserById(3L);
+    }
+
     @Test
-    void getAllUsers() {
-        List<ChatUser> users = this.service.getAllUsers();
+    void testGetUserById() {
+        Long expected = service.getUserByUsername("test3").getId();
+        Long actual = service.getUserById(expected).getId();
+        assertEquals(expected, actual);
+    }
+
+    @Test
+    void testGetUserByIdThrowNoSuchElementException() {
+        Exception exception = assertThrows(NoSuchElementException.class, () -> service.getUserById(4L));
+        String expected = "User with id '4' does not exist";
+        String actual = exception.getMessage();
+        assertEquals(expected, actual);
+    }
+
+    @Test
+    void testGetUserByUsername() {
+        String expected = "test2";
+        String actual = service.getUserByUsername("test2").getUsername();
+        assertEquals(expected, actual);
+    }
+
+    @Test
+    void testGetUserByUsernameThrowNoSuchElementException() {
+        Exception exception = assertThrows(NoSuchElementException.class, () -> service.getUserByUsername("name"));
+        String expected = "User with username 'name' does not exist";
+        String actual = exception.getMessage();
+        assertEquals(expected, actual);
+    }
+
+    @Test
+    void testGetAllUsers() {
+        List<ChatUser> users = service.getAllUsers();
         assertEquals(3, users.size());
     }
 
