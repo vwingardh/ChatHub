@@ -1,5 +1,6 @@
 package com.chat.chat;
 
+import com.chat.chat.customExceptions.InvalidUsernameLengthException;
 import com.chat.chat.user.ChatUser;
 import com.chat.chat.user.ChatUserService;
 import jakarta.transaction.Transactional;
@@ -24,9 +25,9 @@ public class ChatServiceTest {
 
     @BeforeEach
     void setupUsers() {
-        ChatUser user1 = service.createUser("test1");
-        ChatUser user2 = service.createUser("test2");
-        ChatUser user3 = service.createUser("test3");
+        service.createUser("test1");
+        service.createUser("test2");
+        service.createUser("test3");
     }
 
     @AfterEach
@@ -42,6 +43,22 @@ public class ChatServiceTest {
         ChatUser createdUser = service.createUser("test-user");
         assertNotNull(createdUser);
         assertEquals(expected, createdUser.getUsername());
+    }
+
+    @Test
+    void testCreateUserLessThan5CharactersThrowsException() {
+        Exception exception = assertThrows(InvalidUsernameLengthException.class, () -> service.createUser("Test_driven_development_is_fun!"));
+        String expected = "Username must be less than 30 characters";
+        String actual = exception.getMessage();
+        assertEquals(expected, actual);
+    }
+
+    @Test
+    void testCreateUserGreaterThan50CharactersThrowsException() {
+        Exception exception = assertThrows(InvalidUsernameLengthException.class, () -> service.createUser("four"));
+        String expected = "Username must be at least 5 characters";
+        String actual = exception.getMessage();
+        assertEquals(expected, actual);
     }
 
     @Test

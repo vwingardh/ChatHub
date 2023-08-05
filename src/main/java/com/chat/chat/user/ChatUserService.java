@@ -1,5 +1,6 @@
 package com.chat.chat.user;
 
+import com.chat.chat.customExceptions.InvalidUsernameLengthException;
 import com.chat.chat.customExceptions.UsernameAlreadyTakenException;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -28,6 +29,9 @@ public class ChatUserService {
     }
 
     public ChatUser createUser(String username) throws UsernameAlreadyTakenException {
+        if (username.length() <= 4 || username.length() >= 30) {
+            throw new InvalidUsernameLengthException(username.length());
+        }
         ChatUser isUsernameAvailable = repo.findByUsername(username);
         if (isUsernameAvailable != null) {
             throw new UsernameAlreadyTakenException(username);
