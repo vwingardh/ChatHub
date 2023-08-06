@@ -5,5 +5,5 @@ export default function User() {
         <main>
             <UsernameForm></UsernameForm>
         </main>
-    )
+    );
 }
