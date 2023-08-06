@@ -7,7 +7,6 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/api/")
-@CrossOrigin("*")
 public class ChatUserController {
 
     private final ChatUserService service;
@@ -28,7 +27,7 @@ public class ChatUserController {
     }
 
     @PostMapping("users")
-    public ChatUser createUser(@RequestParam("username") String username) {
-        return service.createUser(username);
+    public ChatUser createUser(@RequestBody ChatUserDto userDto) {
+        return service.createUser(userDto.username());
     }
 }
