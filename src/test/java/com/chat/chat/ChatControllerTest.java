@@ -6,6 +6,7 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -23,7 +24,7 @@ public class ChatControllerTest {
 
     @Test
     void testGetStatusCode200() throws Exception {
-        this.mvc.perform(MockMvcRequestBuilders.get("/api/status"))
+        this.mvc.perform(MockMvcRequestBuilders.get("/api/user-status"))
                 .andExpect(status().isOk());
     }
 
