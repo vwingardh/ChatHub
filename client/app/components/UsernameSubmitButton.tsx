@@ -1,7 +1,8 @@
 "use client";
 import { Button } from "@mui/material";
 import axios from "axios";
-import router, { useRouter } from "next/router";
+import { useRouter } from "next/navigation";
+import { useState } from "react";
 
 type UsernameProps = {
     username: string;
@@ -13,13 +14,15 @@ export default function UsernameSubmitButton({
     setUsernameError,
 }: UsernameProps) {
     
+    const router = useRouter();
+
     const handleUsernameSubmit = () => {
         axios
             .post("http://localhost:8080/api/users", {
                 username: username,
             })
             .then((response) => {
-                console.log(response);
+                router.push("/chatroom")
             })
             .catch((error) => {
                 if (

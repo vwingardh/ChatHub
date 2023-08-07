@@ -1,6 +1,7 @@
 "use client";
 import { Button } from "@mui/material";
 import axios from "axios";
+import { useRouter } from "next/navigation";
 
 type ChatroomNameProps = {
     chatroomName: string;
@@ -11,13 +12,16 @@ export default function ChatroomNameSubmitButton({
     chatroomName,
     setChatroomNameError,
 }: ChatroomNameProps) {
+
+    const router = useRouter();
+
     const handleChatroomNameSubmit = () => {
         axios
             .post("http://localhost:8080/api/chatrooms", {
                 chatroomName: chatroomName,
             })
             .then((response) => {
-                console.log(response);
+                router.push("/messaging")
             })
             .catch((error) => {
                 if (
