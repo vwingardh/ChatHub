@@ -25,7 +25,7 @@ public class ChatUserController {
     @GetMapping("user-status")
     public ResponseEntity<ApiResponse> getStatus200() {
         ApiResponse response = new ApiResponse();
-        response.setStatus("Api is operational");
+        response.setStatus("API is operational");
         return ResponseEntity.ok().body(response);
     }
 

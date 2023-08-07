@@ -24,7 +24,7 @@ public class ChatroomController {
     @GetMapping("chatroom-status")
     public ResponseEntity<ApiResponse> getStatusCode200() {
         ApiResponse response = new ApiResponse();
-        response.setStatus("Api is operational");
+        response.setStatus("API is operational");
         return ResponseEntity.ok().body(response);
     }
 
