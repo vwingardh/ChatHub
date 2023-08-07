@@ -1,19 +1,44 @@
 package com.chat.chat.message;
 
 import com.chat.chat.customApiResponses.ApiResponse;
+import com.chat.chat.customExceptions.MessageExceedsMaximumException;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+
+import java.net.URI;
 
 @RestController
 @RequestMapping("/api/")
 public class MessageController {
+
+    private final MessageService service;
+
+    @Autowired
+    public MessageController(MessageService service) {
+        this.service = service;
+    }
 
     @GetMapping("message-status")
     public ResponseEntity<ApiResponse> getStatusCode200() {
         ApiResponse response = new ApiResponse();
         response.setStatus("API is operational");
         return ResponseEntity.ok().body(response);
+    }
+
+    @PostMapping("messages")
+    public ResponseEntity<ApiResponse> createMessage(@RequestBody MessageDto messageDto) {
+        ApiResponse response = new ApiResponse();
+        try {
+            Message newMessage = service.createMessage(messageDto.messageText());
+            response.setData(newMessage);
+            return ResponseEntity.created(URI.create("/api/messages/" + newMessage.getId()))
+                    .contentType(MediaType.APPLICATION_JSON)
+                    .body(response);
+        } catch (MessageExceedsMaximumException e) {
+            response.setError(e.getMessage());
+            return ResponseEntity.badRequest().body(response);
+        }
     }
 }
