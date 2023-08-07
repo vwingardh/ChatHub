@@ -15,7 +15,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 @WebMvcTest(value = MessageController.class)
 @ContextConfiguration(classes = ChatApplication.class)
-public class MessageControllerClass {
+public class MessageControllerTest {
 
     @Autowired
     protected MockMvc mvc;
