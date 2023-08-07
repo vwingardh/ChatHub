@@ -10,7 +10,7 @@ public class Chatroom {
     private Long id;
 
     @Column(name = "chatroom_name", nullable = false)
-    private String name;
+    private String chatroomName;
 
     public Chatroom() {
 
@@ -18,7 +18,7 @@ public class Chatroom {
 
     public Chatroom(Long id, String name) {
         this.id = id;
-        this.name = name;
+        this.chatroomName = name;
     }
 
     public Long getId() {
@@ -26,10 +26,10 @@ public class Chatroom {
     }
 
     public String getName() {
-        return name;
+        return chatroomName;
     }
 
     public void setName(String name) {
-        this.name = name;
+        this.chatroomName = name;
     }
 }
