@@ -29,7 +29,7 @@ public class ChatUserService {
     }
 
     public ChatUser createUser(String username) throws UsernameAlreadyTakenException {
-        if (username.length() <= 4 || username.length() >= 30) {
+        if (username.length() <= 4 || username.length() >= 31) {
             throw new InvalidUsernameLengthException(username.length());
         }
         ChatUser isUsernameAvailable = repo.findByUsername(username);
@@ -38,8 +38,7 @@ public class ChatUserService {
         }
         ChatUser user = new ChatUser();
         user.setUsername(username);
-        repo.save(user);
-        return user;
+        return repo.save(user);
     }
 
     public ChatUser getUserById(Long id) throws NoSuchElementException {
