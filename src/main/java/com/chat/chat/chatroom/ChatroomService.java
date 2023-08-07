@@ -26,7 +26,7 @@ public class ChatroomService {
         if (chatroomName.length() <= 4 || chatroomName.length() >= 31) {
             throw new InvalidChatroomNameLengthException(chatroomName.length());
         }
-        Chatroom isChatroomAvailable = repo.findByName(chatroomName);
+        Chatroom isChatroomAvailable = repo.findByChatroomName(chatroomName);
         if (isChatroomAvailable != null) {
             throw new ChatroomNameAlreadyTakenException(chatroomName);
         }
@@ -44,11 +44,11 @@ public class ChatroomService {
     }
 
     public Chatroom getChatroomByChatroomName(String chatroomName) throws NoSuchElementException {
-        Chatroom chatroom = repo.findByName(chatroomName);
+        Chatroom chatroom = repo.findByChatroomName(chatroomName);
         if (chatroom == null) {
             throw new NoSuchElementException(String.format("Chatroom with name '%s' does not exist", chatroomName));
         }
-        return repo.findByName(chatroomName);
+        return chatroom;
     }
 
     public Chatroom getChatroomById(Long id) throws NoSuchElementException {
