@@ -8,6 +8,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.net.URI;
+import java.util.NoSuchElementException;
 
 @RestController
 @RequestMapping("/api/")
@@ -25,6 +26,20 @@ public class MessageController {
         ApiResponse response = new ApiResponse();
         response.setStatus("API is operational");
         return ResponseEntity.ok().body(response);
+    }
+
+    @GetMapping("messages/{id}")
+    public ResponseEntity<ApiResponse> getMessageById(@PathVariable String id) {
+        ApiResponse response = new ApiResponse();
+        try {
+            Long convertedId = Long.valueOf(id);
+            Message message = service.getMessageById(convertedId);
+            response.setData(message);
+            return ResponseEntity.ok().body(response);
+        } catch (NoSuchElementException e) {
+            response.setError(e.getMessage());
+            return ResponseEntity.badRequest().body(response);
+        }
     }
 
     @PostMapping("messages")
