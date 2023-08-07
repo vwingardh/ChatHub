@@ -1,5 +1,6 @@
 package com.chat.chat.user;
 
+import com.chat.chat.customApiResponses.ApiResponse;
 import com.chat.chat.customExceptions.InvalidUsernameLengthException;
 import com.chat.chat.customExceptions.UsernameAlreadyTakenException;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,9 +22,11 @@ public class ChatUserController {
         this.service = service;
     }
 
-    @GetMapping("status")
-    public ResponseEntity getStatus200() {
-        return ResponseEntity.ok().build();
+    @GetMapping("user-status")
+    public ResponseEntity<ApiResponse> getStatus200() {
+        ApiResponse response = new ApiResponse();
+        response.setStatus("Api is operational");
+        return ResponseEntity.ok().body(response);
     }
 
     @GetMapping
