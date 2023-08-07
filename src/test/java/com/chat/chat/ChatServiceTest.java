@@ -56,7 +56,7 @@ public class ChatServiceTest {
     @Test
     void testCreateUserLessThan5CharactersThrowsException() {
         Exception exception = assertThrows(InvalidUsernameLengthException.class, () -> service.createUser("Test_driven_development_is_fun!"));
-        String expected = "Username must be less than 30 characters";
+        String expected = "Username must be 30 characters or less";
         String actual = exception.getMessage();
         assertEquals(expected, actual);
     }
@@ -67,6 +67,18 @@ public class ChatServiceTest {
         String expected = "Username must be at least 5 characters";
         String actual = exception.getMessage();
         assertEquals(expected, actual);
+    }
+
+    @Test
+    void testCreateUser5CharactersShouldSucceed() {
+        ChatUser user = service.createUser("fives");
+        assertNotNull(user);
+    }
+
+    @Test
+    void testCreateUserExactly30CharactersShouldSucceed() {
+        ChatUser user = service.createUser("abcdefghijklmnopqrstuvwxyztttt");
+        assertNotNull(user);
     }
 
     @Test
