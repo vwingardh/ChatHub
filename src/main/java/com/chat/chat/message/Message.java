@@ -10,7 +10,7 @@ public class Message {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(name = "message_text")
+    @Column(name = "message_text", nullable = false, length = 500)
     private String messageText;
 
     public Message() {
