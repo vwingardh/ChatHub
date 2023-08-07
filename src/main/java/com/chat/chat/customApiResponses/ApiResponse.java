@@ -1,9 +1,10 @@
-package com.chat.chat.user;
+package com.chat.chat.customApiResponses;
 
 public class ApiResponse {
 
     private Object data;
     private String error;
+    private String status;
 
     public ApiResponse() {
 
@@ -23,5 +24,13 @@ public class ApiResponse {
 
     public String getError() {
         return error;
+    }
+
+    public String getStatus() {
+        return status;
+    }
+
+    public void setStatus(String status) {
+        this.status = status;
     }
 }
