@@ -73,6 +73,20 @@ public class MessageServiceTest {
         assertNotNull(message);
     }
 
+    @Test
+    void testGetMessageById() {
+        Message newMessage = service.createMessage("testing");
+        Message getNewMessage = service.getMessageById(newMessage.getId());
+        assertEquals(newMessage.getId(), getNewMessage.getId());
+    }
+
+    @Test
+    void testGetMessageByIdThrowsNoSuchElementException() {
+        Exception exception = assertThrows(NoSuchElementException.class, () -> service.getMessageById(255L));
+        String expected = String.format("Message with id '%s' does not exist", 255L);
+        assertEquals(expected, exception.getMessage());
+    }
+
 }
 
 

@@ -33,4 +33,12 @@ public class MessageService {
         }
         repo.deleteById(id);
     }
+
+    public Message getMessageById(Long id) throws NoSuchElementException {
+        Optional<Message> message = repo.findById(id);
+        if (!message.isPresent()) {
+            throw new NoSuchElementException(String.format("Message with id '%s' does not exist", id));
+        }
+        return message.get();
+    }
 }
