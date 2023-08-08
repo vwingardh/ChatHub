@@ -13,6 +13,8 @@ export default function MessageForm({
     setMessageId,
 }: MessageFormProps) {
     const [messageText, setMessageText] = useState("");
+    const userId = sessionStorage.getItem("userId");
+    const chatroomId = sessionStorage.getItem("chatroomId");
 
     const handleMessageText = (event: React.ChangeEvent<HTMLInputElement>) => {
         setMessageText(event.target.value);
@@ -23,6 +25,8 @@ export default function MessageForm({
         axios
             .post("http://localhost:8080/api/messages", {
                 messageText: messageText,
+                userId: userId,
+                chatroomId: chatroomId
             })
             .then((response) => {
                 setMessageId(response.data.data.id);

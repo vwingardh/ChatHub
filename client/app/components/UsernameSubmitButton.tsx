@@ -15,6 +15,7 @@ export default function UsernameSubmitButton({
 }: UsernameProps) {
     
     const router = useRouter();
+    const data = sessionStorage;
 
     const handleUsernameSubmit = () => {
         axios
@@ -22,6 +23,8 @@ export default function UsernameSubmitButton({
                 username: username,
             })
             .then((response) => {
+                console.log(response.data.data.id)
+                data.setItem("userId", response.data.data.id);
                 router.push("/chatroom")
             })
             .catch((error) => {

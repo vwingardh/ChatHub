@@ -14,6 +14,7 @@ export default function ChatroomNameSubmitButton({
 }: ChatroomNameProps) {
 
     const router = useRouter();
+    const data = sessionStorage;
 
     const handleChatroomNameSubmit = () => {
         axios
@@ -21,6 +22,8 @@ export default function ChatroomNameSubmitButton({
                 chatroomName: chatroomName,
             })
             .then((response) => {
+                console.log(response.data.data.id)
+                sessionStorage.setItem("chatroomId", response.data.data.id)
                 router.push("/messaging")
             })
             .catch((error) => {
