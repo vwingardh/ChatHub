@@ -2,11 +2,9 @@ package com.chat.chat.chatroom;
 
 import com.chat.chat.customExceptions.ChatroomNameAlreadyTakenException;
 import com.chat.chat.customExceptions.InvalidChatroomNameLengthException;
-import com.chat.chat.user.ChatUser;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-
 import java.util.NoSuchElementException;
 import java.util.Optional;
 
@@ -31,7 +29,7 @@ public class ChatroomService {
             throw new ChatroomNameAlreadyTakenException(chatroomName);
         }
         Chatroom chatroom = new Chatroom();
-        chatroom.setName(chatroomName);
+        chatroom.setName(chatroomName.trim());
         return repo.save(chatroom);
     }
 

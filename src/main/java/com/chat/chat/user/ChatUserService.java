@@ -37,7 +37,7 @@ public class ChatUserService {
             throw new UsernameAlreadyTakenException(username);
         }
         ChatUser user = new ChatUser();
-        user.setUsername(username);
+        user.setUsername(username.trim());
         return repo.save(user);
     }
 
