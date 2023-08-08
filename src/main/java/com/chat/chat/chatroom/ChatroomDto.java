@@ -1,4 +1,6 @@
 package com.chat.chat.chatroom;
 
-public record ChatroomDto(String chatroomName) {
+import jakarta.validation.constraints.NotBlank;
+
+public record ChatroomDto(@NotBlank String chatroomName) {
 }

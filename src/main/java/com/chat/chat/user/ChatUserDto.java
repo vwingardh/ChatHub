@@ -1,4 +1,6 @@
 package com.chat.chat.user;
 
-public record ChatUserDto(String username) {
+import jakarta.validation.constraints.NotBlank;
+
+public record ChatUserDto(@NotBlank String username) {
 }
