@@ -46,12 +46,15 @@ public class MessageController {
     public ResponseEntity<ApiResponse> createMessage(@RequestBody MessageDto messageDto) {
         ApiResponse response = new ApiResponse();
         try {
-            Message newMessage = service.createMessage(messageDto.messageText());
+            Message newMessage = service.createMessage(messageDto.messageText(), messageDto.userId(), messageDto.chatroomId());
             response.setData(newMessage);
             return ResponseEntity.created(URI.create("/api/messages/" + newMessage.getId()))
                     .contentType(MediaType.APPLICATION_JSON)
                     .body(response);
         } catch (MessageExceedsMaximumException e) {
+            response.setError(e.getMessage());
+            return ResponseEntity.badRequest().body(response);
+        } catch (NoSuchElementException e) {
             response.setError(e.getMessage());
             return ResponseEntity.badRequest().body(response);
         }
