@@ -2,6 +2,7 @@ package com.chat.chatroom;
 
 import com.chat.chat.ChatApplication;
 import com.chat.chat.chatroom.Chatroom;
+import com.chat.chat.chatroom.ChatroomRepository;
 import com.chat.chat.chatroom.ChatroomService;
 import com.chat.chat.customExceptions.ChatroomNameAlreadyTakenException;
 import com.chat.chat.customExceptions.InvalidChatroomNameLengthException;
@@ -14,7 +15,7 @@ import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabas
 import org.springframework.boot.test.context.SpringBootTest;
 import java.util.ArrayList;
 import java.util.NoSuchElementException;
-
+import java.util.Optional;
 import static org.junit.jupiter.api.Assertions.*;
 
 
@@ -26,16 +27,21 @@ public class ChatroomServiceTest {
     @Autowired
     protected ChatroomService service;
 
+    @Autowired
+    protected ChatroomRepository repo;
+
     protected ArrayList<Long> chatroomIds = new ArrayList<>();
+
+    private Chatroom room1;
+    private Chatroom room2;
+
 
     @BeforeEach
     void setupChatrooms() {
-        Chatroom room1 = service.createChatroom("room1");
-        Chatroom room2 = service.createChatroom("room2");
-        Chatroom room3 = service.createChatroom("room3");
+        room1 = service.createChatroom("room1");
+        room2 = service.createChatroom("room2");
         chatroomIds.add(room1.getId());
         chatroomIds.add(room2.getId());
-        chatroomIds.add(room3.getId());
     }
 
     @AfterEach
@@ -54,8 +60,15 @@ public class ChatroomServiceTest {
     }
 
     @Test
+    void testCreateChatroomRemoveWhiteSpace() {
+        String expected = "test";
+        Chatroom chatroom = service.createChatroom("    test    ");
+        assertEquals(expected, chatroom.getName());
+    }
+
+    @Test
     void testCreateChatroomReturnsChatroomNameAlreadyTakenException() {
-        Exception exception = assertThrows(ChatroomNameAlreadyTakenException.class, () -> service.createChatroom("room1"));
+        Exception exception = assertThrows(ChatroomNameAlreadyTakenException.class, () -> service.createChatroom(room1.getName()));
         String expected = "Chatroom name 'room1' is already taken.";
         String actual = exception.getMessage();
         assertEquals(expected, actual);
@@ -90,7 +103,7 @@ public class ChatroomServiceTest {
     }
 
     @Test
-    void testDeleteChatroomById() {
+    void testDeleteChatroomByIdThrowsException() {
         Chatroom deleteChatroom = service.createChatroom("delete-me");
         service.deleteChatroomById(deleteChatroom.getId());
         Exception exception = assertThrows(NoSuchElementException.class, () -> service.getChatroomById(deleteChatroom.getId()));
@@ -100,8 +113,16 @@ public class ChatroomServiceTest {
     }
 
     @Test
+    void testDeleteChatroom() {
+        Chatroom chatroom = service.createChatroom("delete");
+        service.deleteChatroomById(chatroom.getId());
+        Optional<Chatroom> isDeleted = repo.findById(chatroom.getId());
+        assertFalse(isDeleted.isPresent());
+    }
+
+    @Test
     void testGetChatroomByChatroomName() {
-        Chatroom chatroom = service.getChatroomByChatroomName("room2");
+        Chatroom chatroom = service.getChatroomByChatroomName(room2.getName());
         assertNotNull(chatroom);
     }
 

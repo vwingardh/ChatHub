@@ -2,6 +2,7 @@ package com.chat.chat;
 
 import com.chat.chat.customExceptions.InvalidUsernameLengthException;
 import com.chat.chat.user.ChatUser;
+import com.chat.chat.user.ChatUserRepository;
 import com.chat.chat.user.ChatUserService;
 import jakarta.transaction.Transactional;
 import org.junit.jupiter.api.AfterEach;
@@ -10,10 +11,10 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
 import org.springframework.boot.test.context.SpringBootTest;
-
 import java.util.ArrayList;
 import java.util.List;
 import java.util.NoSuchElementException;
+import java.util.Optional;
 import static org.junit.jupiter.api.Assertions.*;
 
 
@@ -25,14 +26,20 @@ public class ChatServiceTest {
     @Autowired
     protected ChatUserService service;
 
+    @Autowired
+    protected ChatUserRepository chatRepo;
+
     protected ArrayList<Long> userIds = new ArrayList<>();
+    private ChatUser user1;
+    private ChatUser user2;
+    private ChatUser user3;
 
 
     @BeforeEach
     void setupUsers() {
-        ChatUser user1 = service.createUser("test1");
-        ChatUser user2 = service.createUser("test2");
-        ChatUser user3 = service.createUser("test3");
+        user1 = service.createUser("test1");
+        user2 = service.createUser("test2");
+        user3 = service.createUser("test3");
         userIds.add(user1.getId());
         userIds.add(user2.getId());
         userIds.add(user3.getId());
@@ -51,6 +58,13 @@ public class ChatServiceTest {
         ChatUser createdUser = service.createUser("test-user");
         assertNotNull(createdUser);
         assertEquals(expected, createdUser.getUsername());
+    }
+
+    @Test
+    void testCreateUserRemoveWhiteSpace() {
+        String expected = "test";
+        ChatUser user = service.createUser("    test    ");
+        assertEquals(expected, user.getUsername());
     }
 
     @Test
@@ -83,12 +97,10 @@ public class ChatServiceTest {
 
     @Test
     void testDeleteUserIsDeleted() {
-        ChatUser deletedUser = service.createUser("delete-user");
-        service.deleteUserById(deletedUser.getId());
-        Exception exception = assertThrows(NoSuchElementException.class, () -> service.getUserById(deletedUser.getId()));
-        String expected = String.format("User with id '%s' does not exist", deletedUser.getId());
-        String actual = exception.getMessage();
-        assertEquals(expected, actual);
+        ChatUser user = service.createUser("delete");
+        service.deleteUserById(user.getId());
+        Optional<ChatUser> isDeleted = chatRepo.findById(user.getId());
+        assertFalse(isDeleted.isPresent());
     }
 
     @Test
