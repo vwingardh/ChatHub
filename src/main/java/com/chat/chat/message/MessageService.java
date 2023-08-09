@@ -8,6 +8,8 @@ import com.chat.chat.user.ChatUserRepository;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
+import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.Optional;
 
@@ -60,4 +62,18 @@ public class MessageService {
         }
         return message.get();
     }
+
+    public List<Message> getMessagesByUserIdChatroomId(Long userId, Long chatroomId) throws NoSuchElementException {
+        Optional<ChatUser> user = userRepo.findById(userId);
+        if (!user.isPresent()) {
+            throw new NoSuchElementException(String.format("User with id '%s' does not exist", userId));
+        }
+        Optional<Chatroom> chatroom = chatRepo.findById(chatroomId);
+        if (!chatroom.isPresent()) {
+            throw new NoSuchElementException(String.format("Chatroom with id '%s' does not exist", chatroomId));
+        }
+        List<Message> messages = messageRepo.findMessageBySenderAndChatroom(user.get(), chatroom.get());
+        return messages;
+    }
+
 }

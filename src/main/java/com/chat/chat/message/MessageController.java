@@ -8,6 +8,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.net.URI;
+import java.util.List;
 import java.util.NoSuchElementException;
 
 @RestController
@@ -41,6 +42,20 @@ public class MessageController {
             return ResponseEntity.badRequest().body(response);
         }
     }
+
+    @GetMapping("messages/user/{userId}/chatroom/{chatroomId}")
+    public ResponseEntity<ApiResponse> getMessagesByUserIdChatroomId(@PathVariable String userId, @PathVariable String chatroomId) {
+        ApiResponse response = new ApiResponse();
+        try {
+            List<Message> messages = service.getMessagesByUserIdChatroomId(Long.valueOf(userId), Long.valueOf(chatroomId));
+            response.setData(messages);
+            return ResponseEntity.ok().body(response);
+        } catch (NoSuchElementException e) {
+            response.setError(response.getError());
+            return ResponseEntity.badRequest().body(response);
+        }
+    }
+
 
     @PostMapping("messages")
     public ResponseEntity<ApiResponse> createMessage(@RequestBody MessageDto messageDto) {
