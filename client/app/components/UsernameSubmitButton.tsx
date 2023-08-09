@@ -23,9 +23,8 @@ export default function UsernameSubmitButton({
                 username: username,
             })
             .then((response) => {
-                console.log(response.data.data.id)
                 data.setItem("userId", response.data.data.id);
-                router.push("/chatroom")
+                router.push("/chat-options")
             })
             .catch((error) => {
                 if (
