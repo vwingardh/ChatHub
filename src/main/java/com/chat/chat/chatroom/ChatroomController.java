@@ -37,6 +37,14 @@ public class ChatroomController {
         return ResponseEntity.ok().body(response);
     }
 
+    @GetMapping("chatrooms/{joinLink}")
+    public ResponseEntity<ApiResponse> getChatroomByChatroomLink(@PathVariable String joinLink) {
+        ApiResponse response = new ApiResponse();
+        Chatroom chatroom = service.getChatroomByChatroomLink(joinLink);
+        response.setData(chatroom);
+        return ResponseEntity.ok().body(response);
+    }
+
     @PostMapping("chatrooms")
     public ResponseEntity<ApiResponse> createChatroom(@RequestBody ChatroomDto chatroomDto) {
         ApiResponse response = new ApiResponse();

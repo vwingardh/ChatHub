@@ -62,5 +62,13 @@ public class ChatroomService {
         return chatroom.get();
     }
 
+    public Chatroom getChatroomByChatroomLink(String joinLink) {
+        Chatroom chatroom = repo.findByLink(joinLink);
+        if (chatroom == null) {
+            throw new NoSuchElementException(String.format("Chatroom with link '%s' does not exist", joinLink));
+        }
+        return chatroom;
+    }
+
 }
 

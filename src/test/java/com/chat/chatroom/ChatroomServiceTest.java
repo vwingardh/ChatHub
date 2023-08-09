@@ -60,6 +60,13 @@ public class ChatroomServiceTest {
     }
 
     @Test
+    void testCreateChatroomHasUUID() {
+        Chatroom chatroomUuid = service.createChatroom("testing");
+        String uuid = chatroomUuid.getLink();
+        assertEquals(36, uuid.length());
+    }
+
+    @Test
     void testCreateChatroomRemoveWhiteSpace() {
         String expected = "test";
         Chatroom chatroom = service.createChatroom("    test    ");
