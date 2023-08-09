@@ -3,7 +3,7 @@ import { FormControl, Input, InputLabel, FormHelperText } from "@mui/material";
 import { useState } from "react";
 import ChatroomNameSubmitButton from "./ChatroomNameSubmitButton";
 
-export default function ChatroomForm() {
+export default function ChatroomNameForm() {
     const [chatroomName, setChatroomName] = useState("");
     const [chatroomNameError, setChatroomNameError] = useState("");
 
