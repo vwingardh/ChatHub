@@ -23,8 +23,8 @@ export default function ChatroomNameSubmitButton({
             })
             .then((response) => {
                 console.log(response.data.data.id)
-                sessionStorage.setItem("chatroomId", response.data.data.id)
-                router.push("/messaging")
+                data.setItem("chatroomId", response.data.data.id)
+                router.push("/chatroom-lobby")
             })
             .catch((error) => {
                 if (
