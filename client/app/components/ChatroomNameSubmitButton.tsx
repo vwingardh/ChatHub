@@ -2,6 +2,7 @@
 import { Button } from "@mui/material";
 import axios from "axios";
 import { useRouter } from "next/navigation";
+import { useState } from "react";
 
 type ChatroomNameProps = {
     chatroomName: string;
@@ -22,8 +23,9 @@ export default function ChatroomNameSubmitButton({
                 chatroomName: chatroomName,
             })
             .then((response) => {
-                console.log(response.data.data.id)
+                const link = response.data.data.link;
                 data.setItem("chatroomId", response.data.data.id)
+                alert("This is the link for your friends to join: " + link)
                 router.push("/chatroom-lobby")
             })
             .catch((error) => {
