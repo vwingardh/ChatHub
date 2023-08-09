@@ -17,6 +17,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
 import org.springframework.boot.test.context.SpringBootTest;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.Optional;
 import static org.junit.jupiter.api.Assertions.*;
@@ -52,6 +53,7 @@ public class MessageServiceTest {
     private Message message1;
     private Message message2;
     private Message message3;
+    private Message message4;
 
     @BeforeEach
     void setupMessages() {
@@ -66,6 +68,8 @@ public class MessageServiceTest {
         message1 = messageService.createMessage("This is text1", user1.getId(), chatroom1.getId());
         message2 = messageService.createMessage("This is text2", user2.getId(), chatroom2.getId());
         message3 = messageService.createMessage("This is text3", user3.getId(), chatroom3.getId());
+        message4 = messageService.createMessage("This is text4", user1.getId(), chatroom1.getId());
+
 
         messageIds.add(message1.getId());
         messageIds.add(message2.getId());
@@ -155,6 +159,26 @@ public class MessageServiceTest {
     void testGetMessageByIdThrowsNoSuchElementException() {
         Exception exception = assertThrows(NoSuchElementException.class, () -> messageService.getMessageById(255L));
         String expected = String.format("Message with id '%s' does not exist", 255L);
+        assertEquals(expected, exception.getMessage());
+    }
+
+    @Test
+    void testGetMessagesByUserIdChatroomId() {
+        List<Message> messages = messageService.getMessagesByUserIdChatroomId(user1.getId(), chatroom1.getId());
+        assertEquals(2, messages.size());
+    }
+
+    @Test
+    void testGetMessagesByUserIdChatroomIdThrowsNoSuchElementExceptionNoUserId() {
+        Exception exception = assertThrows(NoSuchElementException.class, () -> messageService.getMessagesByUserIdChatroomId(255L, chatroom1.getId()));
+        String expected = "User with id '255' does not exist";
+        assertEquals(expected, exception.getMessage());
+    }
+
+    @Test
+    void testGetMessagesByUserIdChatroomIdThrowsNoSuchElementExceptionNoChatroomId() {
+        Exception exception = assertThrows(NoSuchElementException.class, () -> messageService.getMessagesByUserIdChatroomId(user1.getId(), 255L));
+        String expected = "Chatroom with id '255' does not exist";
         assertEquals(expected, exception.getMessage());
     }
 
