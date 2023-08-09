@@ -1,4 +1,4 @@
-"use client";
+a"use client";
 import { FormControl, InputLabel, Input, Button } from "@mui/material";
 import { useState } from "react";
 import axios from "axios";
@@ -30,6 +30,7 @@ export default function MessageForm({
             })
             .then((response) => {
                 setMessageId(response.data.data.id);
+                setMessageText("");
             })
             .catch((error) => {
                 if (
@@ -51,6 +52,7 @@ export default function MessageForm({
                     Type message
                 </InputLabel>
                 <Input
+                    value={messageText}
                     onChange={handleMessageText}
                     id="username"
                     aria-describedby="username"
