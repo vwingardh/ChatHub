@@ -5,6 +5,7 @@ import com.chat.chat.customExceptions.InvalidChatroomNameLengthException;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.Optional;
 
@@ -39,6 +40,10 @@ public class ChatroomService {
             throw new NoSuchElementException(String.format("Chatroom with id '%s' does not exist", id));
         }
         repo.deleteById(id);
+    }
+
+    public List<Chatroom> getAllChatrooms() {
+        return repo.findAll();
     }
 
     public Chatroom getChatroomByChatroomName(String chatroomName) throws NoSuchElementException {
