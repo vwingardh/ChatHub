@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 
 type DisplayMessageProps = {
     messageId: string | null;
+    joinLink: string | null;
 };
 
 type MessageDisplay = {
@@ -12,16 +13,15 @@ type MessageDisplay = {
     messageText: string;
 }
 
-export default function DisplayMessage({ messageId }: DisplayMessageProps) {
+export default function DisplayMessage({ messageId, joinLink }: DisplayMessageProps) {
     const [messageText, setMessageText] = useState<Array<MessageDisplay>>([]);
     const [messageTextError, setMessageTextError] = useState("");
+    
     const userId = sessionStorage.getItem("userId");
     const chatroomId = sessionStorage.getItem("chatroomId");
 
-    console.log(chatroomId)
-
     useEffect(() => {
-        if (messageId) {
+        if (chatroomId) {
             axios
                 .get("http://localhost:8080/api/messages/chatroom/" + chatroomId)
                 .then((response) => {
@@ -38,8 +38,8 @@ export default function DisplayMessage({ messageId }: DisplayMessageProps) {
                         setMessageTextError("An unexpected error occurred.");
                     }
                 });
-        }
-    }, [chatroomId, messageId, userId]);
+        } 
+    }, [chatroomId, userId, messageId]);
 
     return (
         <>

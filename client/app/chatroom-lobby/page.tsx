@@ -13,7 +13,7 @@ export default function ChatroomLobby() {
 
     return (
         <main>
-            <DisplayMessage messageId={messageId} />
+            <DisplayMessage messageId={messageId} joinLink={null} />
             <MessageForm setMessageTextError={setMessageTextError} setMessageId={setMessageId}/>
             {messageTextError && <div>{messageTextError}</div>}
         </main>
