@@ -1,7 +1,7 @@
 "use client";
 import { FormControl, InputLabel, Input, FormHelperText } from "@mui/material";
-import UsernameSubmitButton from "./UsernameSubmitButton";
 import { useState } from "react";
+import UsernameSubmitButton from "./UsernameSubmitButton";
 
 export default function UsernameForm() {
     const [username, setUsername] = useState("");
