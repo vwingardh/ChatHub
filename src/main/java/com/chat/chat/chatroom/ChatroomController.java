@@ -9,6 +9,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.net.URI;
+import java.util.List;
 
 @RestController
 @RequestMapping("/api/")
@@ -25,6 +26,14 @@ public class ChatroomController {
     public ResponseEntity<ApiResponse> getStatusCode200() {
         ApiResponse response = new ApiResponse();
         response.setStatus("API is operational");
+        return ResponseEntity.ok().body(response);
+    }
+
+    @GetMapping("chatrooms")
+    public ResponseEntity<ApiResponse> getAllChatrooms() {
+        ApiResponse response = new ApiResponse();
+        List<Chatroom> chatroomList = service.getAllChatrooms();
+        response.setData(chatroomList);
         return ResponseEntity.ok().body(response);
     }
 
