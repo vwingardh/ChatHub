@@ -6,16 +6,26 @@ type DisplayMessageProps = {
     messageId: string | null;
 };
 
+type MessageDisplay = {
+    id: string;
+    message: string;
+    messageText: string;
+}
+
 export default function DisplayMessage({ messageId }: DisplayMessageProps) {
-    const [messageText, setMessageText] = useState("");
+    const [messageText, setMessageText] = useState<Array<MessageDisplay>>([]);
     const [messageTextError, setMessageTextError] = useState("");
+    const userId = sessionStorage.getItem("userId");
+    const chatroomId = sessionStorage.getItem("chatroomId");
+
+    console.log(chatroomId)
 
     useEffect(() => {
         if (messageId) {
             axios
-                .get("http://localhost:8080/api/messages/" + messageId)
+                .get("http://localhost:8080/api/messages/chatroom/" + chatroomId)
                 .then((response) => {
-                    setMessageText(response.data.data.messageText);
+                    setMessageText(response.data.data);
                 })
                 .catch((error) => {
                     if (
@@ -29,11 +39,13 @@ export default function DisplayMessage({ messageId }: DisplayMessageProps) {
                     }
                 });
         }
-    }, [messageId]);
+    }, [chatroomId, messageId, userId]);
 
     return (
         <>
-            {messageTextError ? <div>{messageTextError}</div> : <div>{messageText}</div>}
+            {messageText && messageText.map((message: MessageDisplay) => (
+                <div key={message.id}>{message.messageText}</div>
+            ))}
         </>
     );
 }
