@@ -76,4 +76,13 @@ public class MessageService {
         return messages;
     }
 
+    public List<Message> getMessagesByChatroomId(Long chatroomId) throws NoSuchElementException {
+        Optional<Chatroom> chatroom = chatRepo.findById(chatroomId);
+        if (!chatroom.isPresent()) {
+            throw new NoSuchElementException(String.format("Chatroom with id '%s' does not exist", chatroomId));
+        }
+        List<Message> messageList = messageRepo.findMessageByChatroom(chatroom.get());
+        return messageList;
+    }
+
 }

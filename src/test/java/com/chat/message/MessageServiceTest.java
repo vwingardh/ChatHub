@@ -182,6 +182,19 @@ public class MessageServiceTest {
         assertEquals(expected, exception.getMessage());
     }
 
+    @Test
+    void testGetMessagesByChatroomId() {
+        List<Message> messages = messageService.getMessagesByChatroomId(chatroom1.getId());
+        assertEquals(2, messages.size());
+    }
+
+    @Test
+    void testGetMessagesByChatroomIdThrowsNoSuchElementExceptionNoChatroomId() {
+        Exception exception = assertThrows(NoSuchElementException.class, () -> messageService.getMessagesByChatroomId(255L));
+        String expected = "Chatroom with id '255' does not exist";
+        assertEquals(expected, exception.getMessage());
+    }
+
 }
 
 

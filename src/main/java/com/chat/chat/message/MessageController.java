@@ -56,6 +56,19 @@ public class MessageController {
         }
     }
 
+    @GetMapping("messages/chatroom/{chatroomId}")
+    public ResponseEntity<ApiResponse> getMessagesByChatroomId(@PathVariable String chatroomId) {
+        ApiResponse response = new ApiResponse();
+        try {
+            List<Message> messages = service.getMessagesByChatroomId(Long.valueOf(chatroomId));
+            response.setData(messages);
+            return ResponseEntity.ok().body(response);
+        } catch (NoSuchElementException e) {
+            response.setError(response.getError());
+            return ResponseEntity.badRequest().body(response);
+        }
+    }
+
 
     @PostMapping("messages")
     public ResponseEntity<ApiResponse> createMessage(@RequestBody MessageDto messageDto) {
