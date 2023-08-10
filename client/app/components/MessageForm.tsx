@@ -2,47 +2,36 @@
 import { FormControl, InputLabel, Input, Button } from "@mui/material";
 import { useState } from "react";
 import axios from "axios";
+import { sendMessage } from "../lib/websocket";
+
 
 type MessageFormProps = {
-    setMessageTextError: React.Dispatch<React.SetStateAction<string>>;
-    setMessageId: React.Dispatch<React.SetStateAction<string>>;
+    onSend: (message: any) => void;
 };
 
-export default function MessageForm({
-    setMessageTextError,
-    setMessageId,
-}: MessageFormProps) {
+
+export default function MessageForm({ onSend }: MessageFormProps) {
     const [messageText, setMessageText] = useState("");
     const userId = sessionStorage.getItem("userId");
     const channelId = sessionStorage.getItem("channelId");
 
     const handleMessageText = (event: React.ChangeEvent<HTMLInputElement>) => {
         setMessageText(event.target.value);
-        setMessageTextError("");
     };
 
     const handleMessageSubmit = () => {
-        axios
-            .post("http://localhost:8080/api/messages", {
-                messageText: messageText,
-                userId: userId,
-                channelId: channelId
-            })
-            .then((response) => {
-                setMessageId(response.data.data.id);
-                setMessageText("");
-            })
-            .catch((error) => {
-                if (
-                    error.response &&
-                    error.response.data &&
-                    error.response.data.error
-                ) {
-                    setMessageTextError(error.response.data.error);
-                } else {
-                    setMessageTextError("An unexpected error occurred.");
-                }
-            });
+        axios.post("http://localhost:8080/api/messages", {
+            messageText: messageText,
+            userId: userId,
+            channelId: channelId
+        })
+        .then((response) => {
+            sendMessage(messageText, userId, channelId)
+            setMessageText("");
+        })
+        .catch((error) => {
+            console.error(error);
+        })
     };
 
     return (
@@ -59,7 +48,7 @@ export default function MessageForm({
                     inputProps={{ maxLength: 500 }}
                     required
                 />
-                <Button onClick={handleMessageSubmit}>Send</Button>
+                <Button onClick={handleMessageSubmit}>Post</Button>
             </FormControl>
         </>
     );
