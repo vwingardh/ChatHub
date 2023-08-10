@@ -4,29 +4,29 @@ import axios from "axios";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 
-type ChatroomNameProps = {
-    chatroomName: string;
-    setChatroomNameError: React.Dispatch<React.SetStateAction<string>>;
+type ChannelNameProps = {
+    channelName: string;
+    setChannelNameError: React.Dispatch<React.SetStateAction<string>>;
 };
 
-export default function ChatroomNameSubmitButton({
-    chatroomName,
-    setChatroomNameError,
-}: ChatroomNameProps) {
+export default function ChannelNameSubmitButton({
+    channelName,
+    setChannelNameError,
+}: ChannelNameProps) {
 
     const router = useRouter();
     const data = sessionStorage;
 
-    const handleChatroomNameSubmit = () => {
+    const handleChannelNameSubmit = () => {
         axios
-            .post("http://localhost:8080/api/chatrooms", {
-                chatroomName: chatroomName,
+            .post("http://localhost:8080/api/channels", {
+                channelName: channelName,
             })
             .then((response) => {
                 const link = response.data.data.link;
-                data.setItem("chatroomId", response.data.data.id)
+                data.setItem("channelId", response.data.data.id)
                 alert("This is the link for your friends to join: " + link)
-                router.push("/chatroom-lobby")
+                router.push("/channel-lobby")
             })
             .catch((error) => {
                 if (
@@ -34,9 +34,9 @@ export default function ChatroomNameSubmitButton({
                     error.response.data &&
                     error.response.data.error
                 ) {
-                    setChatroomNameError(error.response.data.error);
+                    setChannelNameError(error.response.data.error);
                 } else {
-                    setChatroomNameError("An unexpected error occurred.");
+                    setChannelNameError("An unexpected error occurred.");
                 }
                 console.error(error);
             });
@@ -44,7 +44,7 @@ export default function ChatroomNameSubmitButton({
 
     return (
         <>
-            <Button onClick={handleChatroomNameSubmit}>Create</Button>
+            <Button onClick={handleChannelNameSubmit}>Create</Button>
         </>
     );
 }

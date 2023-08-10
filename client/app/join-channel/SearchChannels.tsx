@@ -5,28 +5,28 @@ import SearchIcon from "@mui/icons-material/Search";
 import { useEffect, useState } from "react";
 import axios from "axios";
 
-type ChatroomProps = {
+type ChannelProps = {
     id: string;
     name: string;
 };
 
-export default function SearchChatrooms() {
+export default function SearchChannels() {
     const [searchQuery, setSearchQuery] = useState("");
-    const [retrievedChatrooms, setRetrievedChatrooms] = useState<Array<ChatroomProps>>([]);
+    const [retrievedChannel, setRetrievedChannels] = useState<Array<ChannelProps>>([]);
 
     useEffect(() => {
         axios
-            .get("http://localhost:8080/api/chatrooms")
+            .get("http://localhost:8080/api/channels")
             .then((response) => {
-                setRetrievedChatrooms(response.data.data);
+                setRetrievedChannels(response.data.data);
             })
             .catch((error) => {
                 console.error(error);
             });
     }, []);
 
-    const filteredChatrooms = retrievedChatrooms.filter((chatroom) => 
-    chatroom.name.toLowerCase().startsWith(searchQuery.toLowerCase())
+    const filteredChannel = retrievedChannel.filter((channel) => 
+    channel.name.toLowerCase().startsWith(searchQuery.toLowerCase())
 );
 
     return (
@@ -38,7 +38,7 @@ export default function SearchChatrooms() {
                     onInput={(e: React.ChangeEvent<HTMLInputElement>) => {
                         setSearchQuery(e.target.value);
                     }}
-                    label="Enter a chatroom name"
+                    label="Enter a channel name"
                     variant="outlined"
                     placeholder="Search..."
                     size="small"
@@ -49,8 +49,8 @@ export default function SearchChatrooms() {
 
                 {searchQuery && (
                     <div>
-                    {filteredChatrooms.map(chatroom => (
-                        <div key={chatroom.id}>{chatroom.name}</div>
+                    {filteredChannel.map(channel => (
+                        <div key={channel.id}>{channel.name}</div>
                     ))}
                 </div>
                 )}

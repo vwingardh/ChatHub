@@ -4,19 +4,19 @@ import axios from "axios";
 import Link from "next/link";
 import { useEffect, useState } from "react";
 
-type ChatroomProps = {
+type ChannelProps = {
     id: string;
     name: string;
 };
 
-export default function DisplayAllChatrooms() {
-    const [chatrooms, setChatrooms] = useState<Array<ChatroomProps>>([]);
+export default function DisplayAllChannels() {
+    const [channels, setChannels] = useState<Array<ChannelProps>>([]);
 
     useEffect(() => {
         axios
-            .get("http://localhost:8080/api/chatrooms")
+            .get("http://localhost:8080/api/channels")
             .then((response) => {
-                setChatrooms(response.data.data);
+                setChannels(response.data.data);
             })
             .catch((error) => {
                 console.error(error);
@@ -36,10 +36,10 @@ export default function DisplayAllChatrooms() {
             }}
             subheader={<li />}
         >
-            {chatrooms.map((chatroom) => (
-                <ListItem key={chatroom.id}>
-                    <Link href={`/messaging/${chatroom.id}`}>
-                        {chatroom.name}
+            {channel.map((channel) => (
+                <ListItem key={channel.id}>
+                    <Link href={`/messaging/${channel.id}`}>
+                        {channel.name}
                     </Link>
                 </ListItem>
             ))}

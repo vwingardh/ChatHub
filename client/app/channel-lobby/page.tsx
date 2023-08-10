@@ -6,7 +6,7 @@ import { useRouter } from "next/router";
 import MessageForm from "../components/MessageForm";
 
 
-export default function ChatroomLobby() {
+export default function ChannelLobby() {
 
     const [messageTextError, setMessageTextError] = useState("");
     const [messageId, setMessageId] = useState("");

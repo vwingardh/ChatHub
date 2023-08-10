@@ -14,7 +14,7 @@ export default function MessageForm({
 }: MessageFormProps) {
     const [messageText, setMessageText] = useState("");
     const userId = sessionStorage.getItem("userId");
-    const chatroomId = sessionStorage.getItem("chatroomId");
+    const channelId = sessionStorage.getItem("channelId");
 
     const handleMessageText = (event: React.ChangeEvent<HTMLInputElement>) => {
         setMessageText(event.target.value);
@@ -26,7 +26,7 @@ export default function MessageForm({
             .post("http://localhost:8080/api/messages", {
                 messageText: messageText,
                 userId: userId,
-                chatroomId: chatroomId
+                channelId: channelId
             })
             .then((response) => {
                 setMessageId(response.data.data.id);

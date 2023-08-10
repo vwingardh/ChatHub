@@ -4,28 +4,28 @@ import axios from "axios";
 import { useRouter } from "next/navigation";
 import { useState, useEffect } from "react";
 
-type JoinChatroomLinkProp = {
-    chatroomLink: string;
+type JoinChannelLinkProp = {
+    channelLink: string;
 };
 
-export default function JoinChatroomSubmitButton({
-    chatroomLink,
-}: JoinChatroomLinkProp) {
+export default function JoinChannelSubmitButton({
+    channelLink,
+}: JoinChannelLinkProp) {
 
     const router = useRouter();
     const data = sessionStorage;
 
     useEffect(() => {
-        if (chatroomLink)
-        axios.get("http://localhost:8080/api/chatrooms/" + chatroomLink)
+        if (channelLink)
+        axios.get("http://localhost:8080/api/channels/" + channelLink)
         .then((response) => {
-            data.setItem("chatroomId", response.data.data.id);
-            router.push("/chatroom-lobby")
+            data.setItem("channelId", response.data.data.id);
+            router.push("/channel-lobby")
         })
         .catch((error) => {
             console.error(error);
         });
-    }, [chatroomLink, data, router]);
+    }, [channelLink, data, router]);
     
     return null;
 }

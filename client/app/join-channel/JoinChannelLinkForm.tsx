@@ -1,33 +1,33 @@
 "use client";
 import { Button, FormControl, Input, InputLabel } from "@mui/material";
 import { useState } from "react";
-import JoinChatroomSubmitButton from "./JoinChatroomSubmit";
+import JoinChannelSubmitButton from "./JoinChannelSubmit";
 
-export default function JoinChatroomLinkForm() {
-    const [chatroomLink, setChatroomLink] = useState("");
+export default function JoinChannelLinkForm() {
+    const [channelLink, setChannelLink] = useState("");
     const [submitLink, setSubmitLink] = useState("");
 
     const handleSubmit = (e: React.MouseEvent) => {
         e.preventDefault();
-        setSubmitLink(chatroomLink);
+        setSubmitLink(channelLink);
     };
 
     return (
         <FormControl style={{ marginTop: "200px", marginLeft: "200px" }}>
-            <InputLabel htmlFor="chatroomLink" required>
-                Enter Chatroom Link
+            <InputLabel htmlFor="channelLink" required>
+                Enter Channel Link
             </InputLabel>
             <Input
                 onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
-                    setChatroomLink(e.target.value);
+                    setChannelLink(e.target.value);
                 }}
-                id="chatroomLink"
-                aria-describedby="chatroom link"
+                id="channelLink"
+                aria-describedby="channel link"
                 required
             />
             <Button onClick={handleSubmit}>Join</Button>
             {submitLink && (
-                <JoinChatroomSubmitButton chatroomLink={submitLink} />
+                <JoinChannelSubmitButton channelLink={submitLink} />
             )}
         </FormControl>
     );

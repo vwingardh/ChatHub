@@ -18,12 +18,12 @@ export default function DisplayMessage({ messageId, joinLink }: DisplayMessagePr
     const [messageTextError, setMessageTextError] = useState("");
     
     const userId = sessionStorage.getItem("userId");
-    const chatroomId = sessionStorage.getItem("chatroomId");
+    const channelId = sessionStorage.getItem("channelId");
 
     useEffect(() => {
-        if (chatroomId) {
+        if (channelId) {
             axios
-                .get("http://localhost:8080/api/messages/chatroom/" + chatroomId)
+                .get("http://localhost:8080/api/messages/channel/" + channelId)
                 .then((response) => {
                     setMessageText(response.data.data);
                 })
@@ -39,7 +39,7 @@ export default function DisplayMessage({ messageId, joinLink }: DisplayMessagePr
                     }
                 });
         } 
-    }, [chatroomId, userId, messageId]);
+    }, [channelId, userId, messageId]);
 
     return (
         <>
