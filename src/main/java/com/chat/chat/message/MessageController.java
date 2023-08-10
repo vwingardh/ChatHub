@@ -71,7 +71,7 @@ public class MessageController {
 
 
     @PostMapping("messages")
-    public ResponseEntity<ApiResponse> createMessage(@RequestBody MessageDto messageDto) {
+    public ResponseEntity<ApiResponse> createMessage(@RequestBody MessageDtoRequest messageDto) {
         ApiResponse response = new ApiResponse();
         try {
             Message newMessage = service.createMessage(messageDto.messageText(), messageDto.userId(), messageDto.channelId());

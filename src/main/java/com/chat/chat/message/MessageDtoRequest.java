@@ -4,7 +4,7 @@ import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 
-public record MessageDto(
+public record MessageDtoRequest(
         @NotBlank @Size(max = 500) String messageText,
         @NotNull Long userId,
         @NotNull Long channelId) {
