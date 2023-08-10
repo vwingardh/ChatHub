@@ -1,6 +1,6 @@
 package com.chat.chat.message;
 
-import com.chat.chat.chatroom.Chatroom;
+import com.chat.chat.channel.Channel;
 import com.chat.chat.user.ChatUser;
 import jakarta.persistence.*;
 import java.time.ZonedDateTime;
@@ -24,17 +24,17 @@ public class Message {
     private ChatUser sender;
 
     @ManyToOne
-    @JoinColumn(name = "chatroom_id")
-    private Chatroom chatroom;
+    @JoinColumn(name = "channel_id")
+    private Channel channel;
 
     public Message() {
 
     }
 
-    public Message(String messageText, ChatUser sender, Chatroom chatroom) {
+    public Message(String messageText, ChatUser sender, Channel channel) {
         this.messageText = messageText;
         this.sender = sender;
-        this.chatroom = chatroom;
+        this.channel = channel;
     }
 
     @PrePersist
@@ -66,11 +66,11 @@ public class Message {
         this.sender = sender;
     }
 
-    public Chatroom getChatroom() {
-        return chatroom;
+    public Channel getChannel() {
+        return channel;
     }
 
-    public void setChatroom(Chatroom chatroom) {
-        this.chatroom = chatroom;
+    public void setChannel(Channel channel) {
+        this.channel = channel;
     }
 }

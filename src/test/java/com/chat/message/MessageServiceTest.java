@@ -1,8 +1,8 @@
 package com.chat.message;
 
 import com.chat.chat.ChatApplication;
-import com.chat.chat.chatroom.Chatroom;
-import com.chat.chat.chatroom.ChatroomService;
+import com.chat.chat.channel.Channel;
+import com.chat.chat.channel.ChannelService;
 import com.chat.chat.customExceptions.MessageExceedsMaximumException;
 import com.chat.chat.message.Message;
 import com.chat.chat.message.MessageRepository;
@@ -35,7 +35,7 @@ public class MessageServiceTest {
     protected ChatUserService chatUserService;
 
     @Autowired
-    protected ChatroomService chatroomService;
+    protected ChannelService channelService;
 
     @Autowired
     protected MessageRepository messageRepo;
@@ -46,9 +46,9 @@ public class MessageServiceTest {
     private ChatUser user2;
     private ChatUser user3;
 
-    private Chatroom chatroom1;
-    private Chatroom chatroom2;
-    private Chatroom chatroom3;
+    private Channel channel1;
+    private Channel channel2;
+    private Channel channel3;
 
     private Message message1;
     private Message message2;
@@ -61,15 +61,14 @@ public class MessageServiceTest {
         user2 = chatUserService.createUser("user2");
         user3 = chatUserService.createUser("user3");
 
-        chatroom1 = chatroomService.createChatroom("chatroom1");
-        chatroom2 = chatroomService.createChatroom("chatroom2");
-        chatroom3 = chatroomService.createChatroom("chatroom3");
+        channel1 = channelService.createChannel("channel1");
+        channel2 = channelService.createChannel("channel2");
+        channel3 = channelService.createChannel("channel3");
 
-        message1 = messageService.createMessage("This is text1", user1.getId(), chatroom1.getId());
-        message2 = messageService.createMessage("This is text2", user2.getId(), chatroom2.getId());
-        message3 = messageService.createMessage("This is text3", user3.getId(), chatroom3.getId());
-        message4 = messageService.createMessage("This is text4", user1.getId(), chatroom1.getId());
-
+        message1 = messageService.createMessage("This is text1", user1.getId(), channel1.getId());
+        message2 = messageService.createMessage("This is text2", user2.getId(), channel2.getId());
+        message3 = messageService.createMessage("This is text3", user3.getId(), channel3.getId());
+        message4 = messageService.createMessage("This is text4", user1.getId(), channel1.getId());
 
         messageIds.add(message1.getId());
         messageIds.add(message2.getId());
@@ -86,7 +85,7 @@ public class MessageServiceTest {
     @Test
     void testCreateMessage() {
         String expected = "this is a test";
-        Message message = messageService.createMessage("this is a test", user1.getId(), chatroom1.getId());
+        Message message = messageService.createMessage("this is a test", user1.getId(), channel1.getId());
         assertNotNull(message);
         assertEquals(expected, message.getMessageText());
     }
@@ -94,8 +93,8 @@ public class MessageServiceTest {
     @Test
     void testDeleteMessageById() {
         ChatUser user = chatUserService.createUser("test-user");
-        Chatroom chatroom = chatroomService.createChatroom("test-chatroom");
-        Message message = messageService.createMessage("this is a test", user.getId(), chatroom.getId());
+        Channel channel = channelService.createChannel("test-channel");
+        Message message = messageService.createMessage("this is a test", user.getId(), channel.getId());
         messageService.deleteMessageById(message.getId());
         Optional<Message> deletedMessage = messageRepo.findById(message.getId());
         assertFalse(deletedMessage.isPresent());
@@ -110,28 +109,28 @@ public class MessageServiceTest {
 
     @Test
     void testCreateMessageWithUserIdDoesNotExistThrowsException() {
-        Exception exception = assertThrows(NoSuchElementException.class, () -> messageService.createMessage("text",255L, chatroom2.getId()));
+        Exception exception = assertThrows(NoSuchElementException.class, () -> messageService.createMessage("text",255L, channel2.getId()));
         String expected = "User with id '255' does not exist";
         assertEquals(expected, exception.getMessage());
     }
 
     @Test
-    void testCreateMessageWithChatroomIdDoesNotExistThrowsException() {
+    void testCreateMessageWithChannelIdDoesNotExistThrowsException() {
         Exception exception = assertThrows(NoSuchElementException.class, () -> messageService.createMessage("text", user2.getId(), 255L));
-        String expected = "Chatroom with id '255' does not exist";
+        String expected = "Channel with id '255' does not exist";
         assertEquals(expected, exception.getMessage());
     }
 
     @Test
     void testCreateMessageThrowsMessageExceedsMaximumException() {
-        Exception exception = assertThrows(MessageExceedsMaximumException.class, () -> messageService.createMessage("In the vast expanse of the universe, where stars twinkle with an unparalleled brilliance and planets orbit with unwavering determination, there exists a small blue planet known as Earth, teeming with life and brimming with endless mysteries. From its azure oceans that cover its surface to its soaring peaks that touch the sky, Earth's beauty is boundless, and its stories, as old as time itself, are whispered by the winds, written in the sands, and echoed in the heartbeats of all the creatures that call it home.", user3.getId(), chatroom3.getId()));
+        Exception exception = assertThrows(MessageExceedsMaximumException.class, () -> messageService.createMessage("In the vast expanse of the universe, where stars twinkle with an unparalleled brilliance and planets orbit with unwavering determination, there exists a small blue planet known as Earth, teeming with life and brimming with endless mysteries. From its azure oceans that cover its surface to its soaring peaks that touch the sky, Earth's beauty is boundless, and its stories, as old as time itself, are whispered by the winds, written in the sands, and echoed in the heartbeats of all the creatures that call it home.", user3.getId(), channel3.getId()));
         String expected = "Text exceeds 500 characters";
         assertEquals(expected, exception.getMessage());
     }
 
     @Test
     void testCreateMessageShouldNotThrowMessageExceedsMaximumException() {
-        Message message = messageService.createMessage("In the vast expanse of the universe, where stars twinkle with an unparalleled brilliance and planets orbit with unwavering determination, there exists a small blue planet known as Earth, teeming with life and brimming with endless mysteries. From its azure oceans that cover its surface to its soaring peaks that touch the sky, Earth's beauty is boundless, and its stories, as old as time itself, are whispered by the winds, written in the sands, and echoed in the heartbeats of all the creatures tha", user3.getId(), chatroom3.getId());
+        Message message = messageService.createMessage("In the vast expanse of the universe, where stars twinkle with an unparalleled brilliance and planets orbit with unwavering determination, there exists a small blue planet known as Earth, teeming with life and brimming with endless mysteries. From its azure oceans that cover its surface to its soaring peaks that touch the sky, Earth's beauty is boundless, and its stories, as old as time itself, are whispered by the winds, written in the sands, and echoed in the heartbeats of all the creatures tha", user3.getId(), channel3.getId());
         assertNotNull(message);
     }
 
@@ -149,9 +148,9 @@ public class MessageServiceTest {
     }
 
     @Test
-    void testChatroomIdConnectedToMessage() {
-        Long expected = chatroom3.getId();
-        Chatroom actual = message3.getChatroom();
+    void testChannelIdConnectedToMessage() {
+        Long expected = channel3.getId();
+        Channel actual = message3.getChannel();
         assertEquals(expected, actual.getId());
     }
 
@@ -163,35 +162,35 @@ public class MessageServiceTest {
     }
 
     @Test
-    void testGetMessagesByUserIdChatroomId() {
-        List<Message> messages = messageService.getMessagesByUserIdChatroomId(user1.getId(), chatroom1.getId());
+    void testGetMessagesByUserIdChannelId() {
+        List<Message> messages = messageService.getMessagesByUserIdChannelId(user1.getId(), channel1.getId());
         assertEquals(2, messages.size());
     }
 
     @Test
-    void testGetMessagesByUserIdChatroomIdThrowsNoSuchElementExceptionNoUserId() {
-        Exception exception = assertThrows(NoSuchElementException.class, () -> messageService.getMessagesByUserIdChatroomId(255L, chatroom1.getId()));
+    void testGetMessagesByUserIdChannelIdThrowsNoSuchElementExceptionNoUserId() {
+        Exception exception = assertThrows(NoSuchElementException.class, () -> messageService.getMessagesByUserIdChannelId(255L, channel1.getId()));
         String expected = "User with id '255' does not exist";
         assertEquals(expected, exception.getMessage());
     }
 
     @Test
-    void testGetMessagesByUserIdChatroomIdThrowsNoSuchElementExceptionNoChatroomId() {
-        Exception exception = assertThrows(NoSuchElementException.class, () -> messageService.getMessagesByUserIdChatroomId(user1.getId(), 255L));
-        String expected = "Chatroom with id '255' does not exist";
+    void testGetMessagesByUserIdChannelIdThrowsNoSuchElementExceptionNoChannelId() {
+        Exception exception = assertThrows(NoSuchElementException.class, () -> messageService.getMessagesByUserIdChannelId(user1.getId(), 255L));
+        String expected = "Channel with id '255' does not exist";
         assertEquals(expected, exception.getMessage());
     }
 
     @Test
-    void testGetMessagesByChatroomId() {
-        List<Message> messages = messageService.getMessagesByChatroomId(chatroom1.getId());
+    void testGetMessagesByChannelId() {
+        List<Message> messages = messageService.getMessagesByChannelId(channel1.getId());
         assertEquals(2, messages.size());
     }
 
     @Test
-    void testGetMessagesByChatroomIdThrowsNoSuchElementExceptionNoChatroomId() {
-        Exception exception = assertThrows(NoSuchElementException.class, () -> messageService.getMessagesByChatroomId(255L));
-        String expected = "Chatroom with id '255' does not exist";
+    void testGetMessagesByChannelIdThrowsNoSuchElementExceptionNoChannelId() {
+        Exception exception = assertThrows(NoSuchElementException.class, () -> messageService.getMessagesByChannelId(255L));
+        String expected = "Channel with id '255' does not exist";
         assertEquals(expected, exception.getMessage());
     }
 

@@ -1,14 +1,13 @@
 package com.chat.chat.message;
 
-import com.chat.chat.chatroom.Chatroom;
-import com.chat.chat.chatroom.ChatroomRepository;
+import com.chat.chat.channel.Channel;
+import com.chat.chat.channel.ChannelRepository;
 import com.chat.chat.customExceptions.MessageExceedsMaximumException;
 import com.chat.chat.user.ChatUser;
 import com.chat.chat.user.ChatUserRepository;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-
 import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.Optional;
@@ -18,17 +17,17 @@ import java.util.Optional;
 public class MessageService {
 
     private final MessageRepository messageRepo;
-    private final ChatroomRepository chatRepo;
+    private final ChannelRepository chatRepo;
     private final ChatUserRepository userRepo;
 
     @Autowired
-    public MessageService(MessageRepository messageRepo, ChatroomRepository chatRepo, ChatUserRepository userRepo) {
+    public MessageService(MessageRepository messageRepo, ChannelRepository chatRepo, ChatUserRepository userRepo) {
         this.messageRepo = messageRepo;
         this.chatRepo = chatRepo;
         this.userRepo = userRepo;
     }
 
-    public Message createMessage(String text, Long userId, Long chatroomId) throws MessageExceedsMaximumException {
+    public Message createMessage(String text, Long userId, Long channelId) throws MessageExceedsMaximumException {
         if (text.length() >= 501) {
             throw new MessageExceedsMaximumException();
         }
@@ -36,13 +35,13 @@ public class MessageService {
         if (!user.isPresent()) {
             throw new NoSuchElementException(String.format("User with id '%s' does not exist", userId));
         }
-        Optional<Chatroom> chatroom = chatRepo.findById(chatroomId);
-        if (!chatroom.isPresent()) {
-            throw new NoSuchElementException(String.format("Chatroom with id '%s' does not exist", chatroomId));
+        Optional<Channel> channel = chatRepo.findById(channelId);
+        if (!channel.isPresent()) {
+            throw new NoSuchElementException(String.format("Channel with id '%s' does not exist", channelId));
         }
         Message message = new Message();
         message.setMessageText(text);
-        message.setChatroom(chatRepo.findById(chatroomId).get());
+        message.setChannel(chatRepo.findById(channelId).get());
         message.setSender(userRepo.findById(userId).get());
         return messageRepo.save(message);
     }
@@ -63,25 +62,25 @@ public class MessageService {
         return message.get();
     }
 
-    public List<Message> getMessagesByUserIdChatroomId(Long userId, Long chatroomId) throws NoSuchElementException {
+    public List<Message> getMessagesByUserIdChannelId(Long userId, Long channelId) throws NoSuchElementException {
         Optional<ChatUser> user = userRepo.findById(userId);
         if (!user.isPresent()) {
             throw new NoSuchElementException(String.format("User with id '%s' does not exist", userId));
         }
-        Optional<Chatroom> chatroom = chatRepo.findById(chatroomId);
-        if (!chatroom.isPresent()) {
-            throw new NoSuchElementException(String.format("Chatroom with id '%s' does not exist", chatroomId));
+        Optional<Channel> channel = chatRepo.findById(channelId);
+        if (!channel.isPresent()) {
+            throw new NoSuchElementException(String.format("Channel with id '%s' does not exist", channelId));
         }
-        List<Message> messages = messageRepo.findMessageBySenderAndChatroom(user.get(), chatroom.get());
+        List<Message> messages = messageRepo.findMessageBySenderAndChannel(user.get(), channel.get());
         return messages;
     }
 
-    public List<Message> getMessagesByChatroomId(Long chatroomId) throws NoSuchElementException {
-        Optional<Chatroom> chatroom = chatRepo.findById(chatroomId);
-        if (!chatroom.isPresent()) {
-            throw new NoSuchElementException(String.format("Chatroom with id '%s' does not exist", chatroomId));
+    public List<Message> getMessagesByChannelId(Long channelId) throws NoSuchElementException {
+        Optional<Channel> channel = chatRepo.findById(channelId);
+        if (!channel.isPresent()) {
+            throw new NoSuchElementException(String.format("Channel with id '%s' does not exist", channelId));
         }
-        List<Message> messageList = messageRepo.findMessageByChatroom(chatroom.get());
+        List<Message> messageList = messageRepo.findMessageByChannel(channel.get());
         return messageList;
     }
 

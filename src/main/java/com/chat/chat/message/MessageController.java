@@ -43,11 +43,11 @@ public class MessageController {
         }
     }
 
-    @GetMapping("messages/user/{userId}/chatroom/{chatroomId}")
-    public ResponseEntity<ApiResponse> getMessagesByUserIdChatroomId(@PathVariable String userId, @PathVariable String chatroomId) {
+    @GetMapping("messages/user/{userId}/channel/{channelId}")
+    public ResponseEntity<ApiResponse> getMessagesByUserIdChannelId(@PathVariable String userId, @PathVariable String channelId) {
         ApiResponse response = new ApiResponse();
         try {
-            List<Message> messages = service.getMessagesByUserIdChatroomId(Long.valueOf(userId), Long.valueOf(chatroomId));
+            List<Message> messages = service.getMessagesByUserIdChannelId(Long.valueOf(userId), Long.valueOf(channelId));
             response.setData(messages);
             return ResponseEntity.ok().body(response);
         } catch (NoSuchElementException e) {
@@ -56,11 +56,11 @@ public class MessageController {
         }
     }
 
-    @GetMapping("messages/chatroom/{chatroomId}")
-    public ResponseEntity<ApiResponse> getMessagesByChatroomId(@PathVariable String chatroomId) {
+    @GetMapping("messages/channel/{channelId}")
+    public ResponseEntity<ApiResponse> getMessagesByChannelId(@PathVariable String channelId) {
         ApiResponse response = new ApiResponse();
         try {
-            List<Message> messages = service.getMessagesByChatroomId(Long.valueOf(chatroomId));
+            List<Message> messages = service.getMessagesByChannelId(Long.valueOf(channelId));
             response.setData(messages);
             return ResponseEntity.ok().body(response);
         } catch (NoSuchElementException e) {
@@ -74,7 +74,7 @@ public class MessageController {
     public ResponseEntity<ApiResponse> createMessage(@RequestBody MessageDto messageDto) {
         ApiResponse response = new ApiResponse();
         try {
-            Message newMessage = service.createMessage(messageDto.messageText(), messageDto.userId(), messageDto.chatroomId());
+            Message newMessage = service.createMessage(messageDto.messageText(), messageDto.userId(), messageDto.channelId());
             response.setData(newMessage);
             return ResponseEntity.created(URI.create("/api/messages/" + newMessage.getId()))
                     .contentType(MediaType.APPLICATION_JSON)

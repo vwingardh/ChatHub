@@ -1,27 +1,29 @@
-package com.chat.chat.chatroom;
+package com.chat.chat.channel;
 
 import jakarta.persistence.*;
 import java.util.UUID;
 
 @Entity
-public class Chatroom {
+@Table(name = "channels")
+public class Channel {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(name = "chatroom_name", nullable = false)
-    private String chatroomName;
+    @Column(name = "channel_name", nullable = false)
+    private String channelName;
 
+    @Column(name = "channel_link")
     private String link;
 
-    public Chatroom() {
+    public Channel() {
 
     }
 
-    public Chatroom(Long id, String name) {
+    public Channel(Long id, String channelName) {
         this.id = id;
-        this.chatroomName = name;
+        this.channelName = channelName;
     }
 
     @PrePersist
@@ -36,11 +38,11 @@ public class Chatroom {
     }
 
     public String getName() {
-        return chatroomName;
+        return channelName;
     }
 
-    public void setName(String name) {
-        this.chatroomName = name;
+    public void setName(String channelName) {
+        this.channelName = channelName;
     }
 
     public String getLink() {

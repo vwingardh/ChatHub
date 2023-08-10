@@ -7,5 +7,5 @@ import jakarta.validation.constraints.Size;
 public record MessageDto(
         @NotBlank @Size(max = 500) String messageText,
         @NotNull Long userId,
-        @NotNull Long chatroomId) {
+        @NotNull Long channelId) {
 }

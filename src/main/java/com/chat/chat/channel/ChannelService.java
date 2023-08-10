@@ -1,0 +1,74 @@
+package com.chat.chat.channel;
+
+import com.chat.chat.customExceptions.ChannelNameAlreadyTakenException;
+import com.chat.chat.customExceptions.InvalidChannelNameLengthException;
+import jakarta.transaction.Transactional;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+import java.util.List;
+import java.util.NoSuchElementException;
+import java.util.Optional;
+
+
+@Service
+@Transactional
+public class ChannelService {
+
+    private final ChannelRepository repo;
+
+    @Autowired
+    public ChannelService(ChannelRepository repo) {
+        this.repo = repo;
+    }
+
+    public Channel createChannel(String channelName) throws ChannelNameAlreadyTakenException {
+        if (channelName.length() <= 4 || channelName.length() >= 31) {
+            throw new InvalidChannelNameLengthException(channelName.length());
+        }
+        Channel isChannelAvailable = repo.findByChannelName(channelName);
+        if (isChannelAvailable != null) {
+            throw new ChannelNameAlreadyTakenException(channelName);
+        }
+        Channel channel = new Channel();
+        channel.setName(channelName.trim());
+        return repo.save(channel);
+    }
+
+    public void deleteChannelById(Long id) {
+        Optional<Channel> channel = repo.findById(id);
+        if (!channel.isPresent()) {
+            throw new NoSuchElementException(String.format("Channel with id '%s' does not exist", id));
+        }
+        repo.deleteById(id);
+    }
+
+    public List<Channel> getAllChannels() {
+        return repo.findAll();
+    }
+
+    public Channel getChannelByChannelName(String channelName) throws NoSuchElementException {
+        Channel channel = repo.findByChannelName(channelName);
+        if (channel == null) {
+            throw new NoSuchElementException(String.format("Channel with name '%s' does not exist", channelName));
+        }
+        return channel;
+    }
+
+    public Channel getChannelById(Long id) throws NoSuchElementException {
+        Optional<Channel> channel = repo.findById(id);
+        if (!channel.isPresent()) {
+            throw new NoSuchElementException(String.format("Channel with id '%s' does not exist", id));
+        }
+        return channel.get();
+    }
+
+    public Channel getChannelByChannelLink(String joinLink) {
+        Channel channel = repo.findByLink(joinLink);
+        if (channel == null) {
+            throw new NoSuchElementException(String.format("Channel with link '%s' does not exist", joinLink));
+        }
+        return channel;
+    }
+
+}
+
