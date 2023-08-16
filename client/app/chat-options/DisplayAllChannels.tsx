@@ -1,5 +1,5 @@
 "use client";
-import { List, ListItem, ListItemText, ListSubheader } from "@mui/material";
+import { List, ListItem } from "@mui/material";
 import axios from "axios";
 import Link from "next/link";
 import { useEffect, useState } from "react";
@@ -36,7 +36,7 @@ export default function DisplayAllChannels() {
             }}
             subheader={<li />}
         >
-            {channel.map((channel) => (
+            {channels.map((channel) => (
                 <ListItem key={channel.id}>
                     <Link href={`/messaging/${channel.id}`}>
                         {channel.name}
