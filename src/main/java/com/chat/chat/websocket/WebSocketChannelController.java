@@ -1,5 +1,6 @@
 package com.chat.chat.websocket;
 
+import com.chat.chat.channel.ChannelService;
 import com.chat.chat.customExceptions.MismatchedChannelException;
 import com.chat.chat.message.Message;
 import com.chat.chat.message.MessageDtoRequest;
@@ -16,10 +17,12 @@ import org.springframework.stereotype.Controller;
 public class WebSocketChannelController {
 
     private final MessageService messageService;
+    private final ChannelService channelService;
 
     @Autowired
-    public WebSocketChannelController(MessageService messageService) {
+    public WebSocketChannelController(MessageService messageService, ChannelService channelService) {
         this.messageService = messageService;
+        this.channelService = channelService;
     }
 
     @MessageMapping("/channel/{channelId}")
@@ -32,4 +35,12 @@ public class WebSocketChannelController {
         MessageDtoResponse messageResponse = new MessageDtoResponse(message.getId(), message.getMessageText(), message.getCreated());
         return messageResponse;
     }
+
+    @MessageMapping("/active-users/{channelId}")
+    @SendTo("/active-users/{channelId}")
+    public ActiveUsersDtoResponse getActiveUsers(@DestinationVariable Long channelId) {
+        Long activeUsersCount = channelService.getActiveUsers(channelId);
+        return new ActiveUsersDtoResponse(activeUsersCount);
+    }
+
 }
