@@ -13,7 +13,7 @@ public class WebSocketConfig implements WebSocketMessageBrokerConfigurer {
 
     @Override
     public void configureMessageBroker(MessageBrokerRegistry config) {
-        config.enableSimpleBroker("/channel");
+        config.enableSimpleBroker("/channel", "active-users");
         config.setApplicationDestinationPrefixes("/app");
     }
 
