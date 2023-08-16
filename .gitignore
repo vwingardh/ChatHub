@@ -38,3 +38,4 @@ target
 containerConfig/psql.env
 .DS_Store
 node_modules
+dump.rdb
