@@ -45,6 +45,30 @@ public class ChannelController {
         return ResponseEntity.ok().body(response);
     }
 
+    @GetMapping("channels/{channelId}/active-users")
+    public ResponseEntity<ApiResponse> getActiveUserCount(@PathVariable String channelId) {
+        ApiResponse response = new ApiResponse();
+        Long activeUsers = service.getActiveUsers(Long.valueOf(channelId));
+        response.setData(activeUsers);
+        return ResponseEntity.ok().body(response);
+    }
+
+    @PostMapping("channels/{channelId}/join-channel")
+    public ResponseEntity<ApiResponse> joinChannel(@PathVariable String channelId) {
+        ApiResponse response = new ApiResponse();
+        response.setStatus("User added to channel");
+        service.incrementActiveUsers(Long.valueOf(channelId));
+        return ResponseEntity.ok().body(response);
+    }
+
+    @PatchMapping("channels/{channelId}/decrement-users")
+    public ResponseEntity<ApiResponse> decrementActiveUsers(@PathVariable String channelId) {
+        ApiResponse response = new ApiResponse();
+        response.setStatus("User removed from channel");
+        service.decrementActiveUsers(Long.valueOf(channelId));
+        return ResponseEntity.ok().body(response);
+    }
+
     @PostMapping("channels")
     public ResponseEntity<ApiResponse> createChannel(@RequestBody ChannelDto channelDto) {
         ApiResponse response = new ApiResponse();
