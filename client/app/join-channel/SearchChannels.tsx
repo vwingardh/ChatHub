@@ -4,6 +4,7 @@ import IconButton from "@mui/material/IconButton";
 import SearchIcon from "@mui/icons-material/Search";
 import { useEffect, useState } from "react";
 import axios from "axios";
+import Link from "next/link";
 
 type ChannelProps = {
     id: string;
@@ -13,6 +14,8 @@ type ChannelProps = {
 export default function SearchChannels() {
     const [searchQuery, setSearchQuery] = useState("");
     const [retrievedChannel, setRetrievedChannels] = useState<Array<ChannelProps>>([]);
+
+    const data = sessionStorage;
 
     useEffect(() => {
         axios
@@ -26,7 +29,7 @@ export default function SearchChannels() {
     }, []);
 
     const filteredChannel = retrievedChannel.filter((channel) => 
-    channel.name.toLowerCase().startsWith(searchQuery.toLowerCase())
+    channel.name.toLowerCase().includes(searchQuery.toLowerCase())
 );
 
     return (
@@ -50,7 +53,7 @@ export default function SearchChannels() {
                 {searchQuery && (
                     <div>
                     {filteredChannel.map(channel => (
-                        <div key={channel.id}>{channel.name}</div>
+                        <div key={channel.id}><Link href={`/channel-lobby`} onClick={(() => data.setItem("channelId", channel.id))}>{channel.name}</Link></div>
                     ))}
                 </div>
                 )}
