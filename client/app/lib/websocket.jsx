@@ -1,28 +1,48 @@
 import SockJS from 'sockjs-client';
-import { Client } from 'stompjs';
 
 let stompClient;
+let activeUsersSubscription;
 
-export const connect = (channelId, onMessageReceived) => {
+export const connect = (channelId, onMessageReceived, onActiveUsersReceived) => {
+    if (stompClient && stompClient.connected) {
+        console.warn("WebSocket is already connected.");
+        return;
+    }
+
     const socket = new SockJS('http://localhost:8080/ws');
     stompClient = Stomp.over(socket);
-    stompClient.connect({}, () => {
-        console.log("WebSocket connected successfully.")
+
+    const headers = {
+        "channelId": channelId.toString()
+    };
+
+    stompClient.connect(headers, () => {
         stompClient.subscribe(`/channel/${channelId}`, onMessageReceived);
-        stompClient.debug = function (str) {
-            console.log('STOMP: ' + str);
-        };
+
+        if (onActiveUsersReceived) {
+            subscribeToActiveUsers(channelId, onActiveUsersReceived);
+        }
     }, 
     (error) => {
         console.error('WebSocket Connection Error:', error);
     });
 }
 
-export const sendMessage = (messageText, userId, channelId) => {
-    stompClient.debug = function (str) {
-        console.log('STOMP: ' + str);
-    };
+export const subscribeToActiveUsers = (channelId, onActiveUsersReceived) => {
+    if (stompClient && stompClient.connected) {
+        activeUsersSubscription = stompClient.subscribe(`/active-users/${channelId}`, onActiveUsersReceived);
+    } else {
+        console.error("Stomp client not connected!");
+    }
+}
 
+export const unsubscribeFromActiveUsers = () => {
+    if (activeUsersSubscription) {
+        activeUsersSubscription.unsubscribe();
+    }
+}
+
+export const sendMessage = (messageText, userId, channelId) => {
     const message = {
         messageText: messageText,
         userId: userId,
@@ -34,7 +54,10 @@ export const sendMessage = (messageText, userId, channelId) => {
 
 
 export const disconnect = () => {
-    if (stompClient !== null) {
+    if (activeUsersSubscription) {
+        activeUsersSubscription.unsubscribe();
+    }
+    if (stompClient && stompClient.connected) {
         stompClient.disconnect();
     }
 }
