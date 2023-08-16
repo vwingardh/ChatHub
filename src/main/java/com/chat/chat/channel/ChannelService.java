@@ -4,10 +4,12 @@ import com.chat.chat.customExceptions.ChannelNameAlreadyTakenException;
 import com.chat.chat.customExceptions.InvalidChannelNameLengthException;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.stereotype.Service;
 import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.Optional;
+import java.util.Set;
 
 
 @Service
@@ -15,11 +17,23 @@ import java.util.Optional;
 public class ChannelService {
 
     private final ChannelRepository repo;
+    private final StringRedisTemplate redisTemplate;
 
     @Autowired
-    public ChannelService(ChannelRepository repo) {
+    public ChannelService(ChannelRepository repo, StringRedisTemplate redisTemplate) {
         this.repo = repo;
+        this.redisTemplate = redisTemplate;
     }
+
+    public void printAllKeys() {
+        Set<String> keys = redisTemplate.keys("*");
+        for (String key : keys) {
+            String value = redisTemplate.opsForValue().get(key);
+            System.out.println(key + ": " + value);
+        }
+    }
+
+
 
     public Channel createChannel(String channelName) throws ChannelNameAlreadyTakenException {
         if (channelName.length() <= 4 || channelName.length() >= 31) {
@@ -68,6 +82,21 @@ public class ChannelService {
             throw new NoSuchElementException(String.format("Channel with link '%s' does not exist", joinLink));
         }
         return channel;
+    }
+
+    public void incrementActiveUsers(Long channelId) {
+        String key = "channel:" + channelId + ":activeUsers";
+        redisTemplate.opsForValue().increment(key);
+    }
+
+    public void decrementActiveUsers(Long channelId) {
+        String key = "channel:" + channelId + ":activeUsers";
+        redisTemplate.opsForValue().decrement(key);
+    }
+
+    public Long getActiveUsers(Long channelId) {
+        String key = "channel:" + channelId + ":activeUsers";
+        return redisTemplate.opsForValue().increment(key, 0);
     }
 
 }
