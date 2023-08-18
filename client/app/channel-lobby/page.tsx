@@ -4,31 +4,38 @@ import DisplayMessage from "../components/DisplayMessage";
 import axios from "axios";
 import MessageForm from "../components/MessageForm";
 import { connect, disconnect } from "../lib/websocket";
-import { DisplayActiveUsers } from "./DisplayActiveUsers";
 
-
-type MessageDtoResponse = {
+type Message = {
     id: string;
     messageText: string;
     created: string;
+    sender: {
+        id: number;
+        username: string;
+    };
+    channel: {
+        id: number;
+        link: string;
+        name: string;
+    };
 };
 
 type StompMessageFrame = {
     body: string;
 };
 
-type ChannelProps = {
-    channelId: string | null;
-};
-
 export default function ChannelLobby() {
-    const [messages, setMessages] = useState<Array<MessageDtoResponse>>([]);
+    const [messages, setMessages] = useState<Array<Message>>([]);
     const [messageError, setMessageError] = useState("");
     const [activeUsers, setActiveUsers] = useState(0);
 
     const channelId = sessionStorage.getItem("channelId");
 
-    const joinChannel = async (channelId: ChannelProps) => {
+    const joinChannel = async (channelId: string | null) => {
+        if (!channelId) {
+            console.error("Channel ID is missing from session storage.");
+            return;
+        }
         try {
             await axios.post(
                 `http://localhost:8080/api/channels/${channelId}/join-channel`,
@@ -43,7 +50,11 @@ export default function ChannelLobby() {
         }
     };
 
-    const leaveChannel = async (channelId: ChannelProps) => {
+    const leaveChannel = async (channelId: string | null) => {
+        if (!channelId) {
+            console.error("Channel ID is missing from session storage.");
+            return;
+        }
         try {
             await axios.patch(
                 `http://localhost:8080/api/channels/${channelId}/decrement-users`,
@@ -58,7 +69,7 @@ export default function ChannelLobby() {
         }
     };
 
-    const handleActiveUsersUpdate = (message) => {
+    const handleActiveUsersUpdate = (message: StompMessageFrame) => {
         setActiveUsers(JSON.parse(message.body));
     };
 
@@ -90,7 +101,9 @@ export default function ChannelLobby() {
             });
 
         if (channelId) {
-            connect(channelId, (messageFrame: StompMessageFrame) => {
+            connect(
+                channelId,
+                (messageFrame: StompMessageFrame) => {
                     try {
                         const newMessage = JSON.parse(messageFrame.body);
                         setMessages((prevMessages) => [
@@ -117,15 +130,10 @@ export default function ChannelLobby() {
         };
     }, [channelId]);
 
-    const handleSendMessage = (newMessage: MessageDtoResponse) => {
-        setMessages((prevMessages) => [...prevMessages, newMessage]);
-    };
-
     return (
         <main>
-            <DisplayMessage messages={messages} />
-            <DisplayActiveUsers activeUsers={activeUsers} />
-            <MessageForm onSend={handleSendMessage} />
+            <DisplayMessage messages={messages} activeUsers={activeUsers} />
+            <MessageForm />
             {messageError && <div>{messageError}</div>}
         </main>
     );
