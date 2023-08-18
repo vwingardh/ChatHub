@@ -1,3 +1,4 @@
+import { Stomp } from '@stomp/stompjs';
 import SockJS from 'sockjs-client';
 
 let stompClient;
@@ -48,15 +49,12 @@ export const sendMessage = (messageText, userId, channelId) => {
         userId: userId,
         channelId: channelId
     }
-
     stompClient.send(`/app/channel/${message.channelId}`, {}, JSON.stringify(message));
 }
 
 
 export const disconnect = () => {
-    if (activeUsersSubscription) {
-        activeUsersSubscription.unsubscribe();
-    }
+    unsubscribeFromActiveUsers();
     if (stompClient && stompClient.connected) {
         stompClient.disconnect();
     }
