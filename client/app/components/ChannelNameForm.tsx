@@ -1,5 +1,11 @@
 "use client";
-import { FormControl, Input, InputLabel, FormHelperText } from "@mui/material";
+import {
+    FormControl,
+    Input,
+    InputLabel,
+    FormHelperText,
+    Container,
+} from "@mui/material";
 import { useState } from "react";
 import ChannelNameSubmitButton from "./ChannelNameSubmitButton";
 
@@ -13,25 +19,36 @@ export default function ChannelNameForm() {
     };
 
     return (
-        <>
-            <FormControl>
-                <InputLabel htmlFor="channelName" required>
-                Channel
+        <Container className="container--channel-form">
+            <FormControl className="form" variant="outlined">
+                <InputLabel
+                    htmlFor="channelName"
+                    error={!!channelNameError}
+                    required
+                >
+                    Channel
                 </InputLabel>
                 <Input
                     onChange={handleChannelName}
                     id="channelName"
-                    aria-describedby="channelName"
+                    placeholder="e.g. Tech Talk"
+                    aria-describedby="channelName-helper"
+                    error={!!channelNameError}
                 />
-                <FormHelperText id="channelName">
-                    Please create a channel.
+                <FormHelperText
+                    id="channelName-helper"
+                    error={!!channelNameError}
+                >
+                    {channelNameError
+                        ? channelNameError
+                        : "Please create a channel"}
                 </FormHelperText>
+
                 <ChannelNameSubmitButton
                     channelName={channelName}
                     setChannelNameError={setChannelNameError}
                 />
-                {channelNameError && <div>{channelNameError}</div>}
             </FormControl>
-        </>
+        </Container>
     );
 }
