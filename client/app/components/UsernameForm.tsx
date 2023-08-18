@@ -1,5 +1,5 @@
 "use client";
-import { FormControl, InputLabel, Input, FormHelperText } from "@mui/material";
+import { FormControl, InputLabel, Input, FormHelperText, Container } from "@mui/material";
 import { useState } from "react";
 import UsernameSubmitButton from "./UsernameSubmitButton";
 
@@ -14,7 +14,8 @@ export default function UsernameForm() {
 
     return (
         <>
-            <FormControl>
+        <Container className="container--channel-form">
+            <FormControl className="form">
                 <InputLabel htmlFor="username" required>
                     Username
                 </InputLabel>
@@ -24,7 +25,7 @@ export default function UsernameForm() {
                     aria-describedby="username"
                 />
                 <FormHelperText id="username">
-                    Please create a username.
+                    Please create a username
                 </FormHelperText>
                 <UsernameSubmitButton
                     username={username}
@@ -32,6 +33,7 @@ export default function UsernameForm() {
                 />
                 {usernameError && <div>{usernameError}</div>}
             </FormControl>
+            </Container>
         </>
     );
 }
