@@ -1,23 +1,27 @@
 "use client";
-import { Button } from "@mui/material";
+import { Box, Button as MuiButton, Container } from "@mui/material";
 import Link from "next/link";
+import { useEffect, useState } from "react";
 
 export default function ChatButton() {
-    
-    const data = sessionStorage;
-    const userId = data.getItem("userId");
+    const [userId, setUserId] = useState<string | null>(null);
+
+    useEffect(() => {
+        const storedUserId = sessionStorage.getItem("userId");
+        setUserId(storedUserId);
+    }, []);
+
+    const targetLink = userId ? "/chat-options" : "/user";
 
     return (
-        <main className="flex min-h-screen flex-col items-center justify-between p-24">
-            {!userId ? (
-                <Link href="/user">
-                    <Button>Chat Now</Button>
+        <Container className="container--standard">
+            <Box>
+                <Link href={targetLink} passHref>
+                    <MuiButton className="button--route" variant="contained">
+                        Chat Now
+                    </MuiButton>
                 </Link>
-            ) : (
-                <Link href="/chat-options">
-                    <Button>Chat Now</Button>
-                </Link>
-            )}
-        </main>
+            </Box>
+        </Container>
     );
 }
