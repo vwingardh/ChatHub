@@ -7,27 +7,30 @@ import React from "react";
 const inter = Inter({ subsets: ["latin"] });
 
 export const metadata: Metadata = {
-  title: "Chat application",
-  description: "Create a username, create a chat room, and start chatting!",
+    title: "Messaging",
+    description: "Create a username, create a channel, and start messaging!",
 };
 
 export default function RootLayout({
-  children,
+    children,
 }: {
-  children: React.ReactNode;
+    children: React.ReactNode;
 }) {
-  return (
-    <html lang="en">
-      <head>
-        <meta charSet="UTF-8" />
-        <meta name="viewport" content="initial-scale=1, width=device-width" />
-        <title>Chat</title>
-        <link rel="icon" type="image/x-icon" href="/" />
-      </head>
-      <React.Fragment>
-        <CssBaseline />
-        <body className={inter.className}>{children}</body>
-      </React.Fragment>
-    </html>
-  );
+    return (
+        <html lang="en">
+            <head>
+                <meta charSet="UTF-8" />
+                <meta
+                    name="viewport"
+                    content="initial-scale=1, width=device-width"
+                />
+                <title>Messaging</title>
+                <link rel="icon" type="image/x-icon" href="../chat.png" />
+            </head>
+            <React.Fragment>
+                <CssBaseline />
+                <body className={inter.className}>{children}</body>
+            </React.Fragment>
+        </html>
+    );
 }

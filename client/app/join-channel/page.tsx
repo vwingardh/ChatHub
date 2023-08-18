@@ -1,11 +1,13 @@
-import JoinChannelLinkForm from "./JoinChannelLinkForm";
-import SearchChannels from "./SearchChannels";
+import JoinChannelLinkForm from "../components/JoinChannelLinkForm";
+import SearchChannels from "../components/SearchChannels";
 
 export default function JoinChannelOptions() {
     return (
         <>
-            <SearchChannels></SearchChannels>
-            <JoinChannelLinkForm></JoinChannelLinkForm>
+            <main>
+                <SearchChannels></SearchChannels>
+                <JoinChannelLinkForm></JoinChannelLinkForm>
+            </main>
         </>
     );
 }
