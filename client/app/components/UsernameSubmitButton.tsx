@@ -2,7 +2,6 @@
 import { Button } from "@mui/material";
 import axios from "axios";
 import { useRouter } from "next/navigation";
-import { useState } from "react";
 
 type UsernameProps = {
     username: string;
@@ -13,7 +12,6 @@ export default function UsernameSubmitButton({
     username,
     setUsernameError,
 }: UsernameProps) {
-    
     const router = useRouter();
     const data = sessionStorage;
 
@@ -24,7 +22,7 @@ export default function UsernameSubmitButton({
             })
             .then((response) => {
                 data.setItem("userId", response.data.data.id);
-                router.push("/chat-options")
+                router.push("/chat-options");
             })
             .catch((error) => {
                 if (
@@ -42,7 +40,9 @@ export default function UsernameSubmitButton({
 
     return (
         <>
-            <Button onClick={handleUsernameSubmit}>Create</Button>
+            <Button className="button--submit" onClick={handleUsernameSubmit}>
+                Create
+            </Button>
         </>
     );
 }
