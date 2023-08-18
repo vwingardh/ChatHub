@@ -24,18 +24,7 @@ export default function DisplayAllChannels() {
     }, []);
 
     return (
-        <List
-            sx={{
-                width: "100%",
-                maxWidth: 360,
-                bgcolor: "background.paper",
-                position: "relative",
-                overflow: "auto",
-                maxHeight: 300,
-                "& ul": { padding: 0 },
-            }}
-            subheader={<li />}
-        >
+        <List className="channel-list" subheader={<li />}>
             {channels.map((channel) => (
                 <ListItem key={channel.id}>
                     <Link href={`/messaging/${channel.id}`}>
