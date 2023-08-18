@@ -1,5 +1,7 @@
 "use client";
 import { Button } from "@mui/material";
+import Snackbar from "@mui/material/Snackbar";
+import Alert from "@mui/lab/Alert";
 import axios from "axios";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
@@ -13,9 +15,16 @@ export default function ChannelNameSubmitButton({
     channelName,
     setChannelNameError,
 }: ChannelNameProps) {
-
     const router = useRouter();
+    const [open, setOpen] = useState(false);
+    const [link, setLink] = useState<string | null>(null);
+    const [isCopied, setIsCopied] = useState(false);
     const data = sessionStorage;
+
+    const handleCloseSnackbar = () => {
+        setOpen(false);
+        router.push("/channel-lobby");
+    };
 
     const handleChannelNameSubmit = () => {
         axios
@@ -23,10 +32,10 @@ export default function ChannelNameSubmitButton({
                 channelName: channelName,
             })
             .then((response) => {
-                const link = response.data.data.link;
-                data.setItem("channelId", response.data.data.id)
-                alert("This is the link for your friends to join: " + link)
-                router.push("/channel-lobby")
+                setLink(response.data.data.link);
+                data.setItem("channelId", response.data.data.id);
+                data.setItem("channelName", response.data.data.name);
+                setOpen(true);
             })
             .catch((error) => {
                 if (
@@ -42,9 +51,49 @@ export default function ChannelNameSubmitButton({
             });
     };
 
+    const handleLinkHover = () => {
+        if (link) {
+            navigator.clipboard
+                .writeText(link)
+                .then(() => {
+                    setIsCopied(true);
+                    setTimeout(() => setIsCopied(false), 6000);
+                })
+                .catch((err) => console.error("Could not copy text: ", err));
+        }
+    };
+
     return (
         <>
-            <Button onClick={handleChannelNameSubmit}>Create</Button>
+            <Snackbar
+                open={open}
+                onClose={handleCloseSnackbar}
+                anchorOrigin={{ vertical: "top", horizontal: "center" }}
+            >
+                <Alert
+                    onClose={handleCloseSnackbar}
+                    severity="info"
+                    sx={{ width: "100%" }}
+                >
+                    Share this link for others to join:
+                    <div
+                        onMouseEnter={handleLinkHover}
+                        style={{
+                            cursor: "pointer",
+                            textDecoration: "underline",
+                        }}
+                    >
+                        {isCopied ? "Copied!" : link}
+                    </div>
+                </Alert>
+            </Snackbar>
+
+            <Button
+                onClick={handleChannelNameSubmit}
+                className="button--submit"
+            >
+                Create
+            </Button>
         </>
     );
 }
