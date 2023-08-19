@@ -7,7 +7,7 @@ type JoinChannelLinkProp = {
     channelLink: string;
 };
 
-export default function JoinChannelSubmitButton({
+export default function JoinChannelSubmit({
     channelLink,
 }: JoinChannelLinkProp) {
     const router = useRouter();
@@ -19,6 +19,7 @@ export default function JoinChannelSubmitButton({
                 .get("http://localhost:8080/api/channels/" + channelLink)
                 .then((response) => {
                     data.setItem("channelId", response.data.data.id);
+                    data.setItem("channelName", response.data.data.name);
                     router.push("/channel-lobby");
                 })
                 .catch((error) => {

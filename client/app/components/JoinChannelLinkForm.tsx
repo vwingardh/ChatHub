@@ -7,7 +7,7 @@ import {
     InputLabel,
 } from "@mui/material";
 import { useState } from "react";
-import JoinChannelSubmitButton from "./JoinChannelSubmit";
+import JoinChannelSubmit from "./JoinChannelSubmit";
 
 export default function JoinChannelLinkForm() {
     const [channelLink, setChannelLink] = useState("");
@@ -37,7 +37,7 @@ export default function JoinChannelLinkForm() {
                     Join
                 </Button>
                 {submitLink && (
-                    <JoinChannelSubmitButton channelLink={submitLink} />
+                    <JoinChannelSubmit channelLink={submitLink} />
                 )}
             </FormControl>
         </Container>
