@@ -7,7 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import java.util.List;
 import java.util.NoSuchElementException;
-import java.util.Optional;
+
 
 @Service
 @Transactional
@@ -21,6 +21,34 @@ public class ChatUserService {
     }
 
     public ChatUser getUserByUsername(String username) throws NoSuchElementException {
+        return findUserByUsernameOrElseThrow(username);
+    }
+
+    public ChatUser createUser(String username) throws UsernameAlreadyTakenException {
+        if (username.length() <= 4 || username.length() >= 31) {
+            throw new InvalidUsernameLengthException(username.length());
+        }
+        isUsernameAvailableElseThrow(username);
+
+        ChatUser user = new ChatUser();
+        user.setUsername(username.trim());
+        return repo.save(user);
+    }
+
+    public ChatUser getUserById(Long userId) throws NoSuchElementException {
+        return findUserByIdOrElseThrow(userId);
+    }
+
+    public void deleteUserById(Long userId) throws NoSuchElementException {
+        ChatUser user = findUserByIdOrElseThrow(userId);
+        repo.deleteById(user.getId());
+    }
+
+    public List<ChatUser> getAllUsers() {
+        return repo.findAll();
+    }
+
+    private ChatUser findUserByUsernameOrElseThrow(String username) {
         ChatUser user = repo.findByUsername(username);
         if (user == null) {
             throw new NoSuchElementException(String.format("User with username '%s' does not exist", username));
@@ -28,37 +56,16 @@ public class ChatUserService {
         return user;
     }
 
-    public ChatUser createUser(String username) throws UsernameAlreadyTakenException {
-        if (username.length() <= 4 || username.length() >= 31) {
-            throw new InvalidUsernameLengthException(username.length());
-        }
+    private void isUsernameAvailableElseThrow(String username) {
         ChatUser isUsernameAvailable = repo.findByUsername(username);
         if (isUsernameAvailable != null) {
             throw new UsernameAlreadyTakenException(username);
         }
-        ChatUser user = new ChatUser();
-        user.setUsername(username.trim());
-        return repo.save(user);
     }
 
-    public ChatUser getUserById(Long id) throws NoSuchElementException {
-        Optional<ChatUser> chatUser = repo.findById(id);
-        if (!chatUser.isPresent()) {
-            throw new NoSuchElementException(String.format("User with id '%s' does not exist", id));
-        }
-        return chatUser.get();
-    }
-
-    public void deleteUserById(Long id) throws NoSuchElementException {
-        Optional<ChatUser> user = repo.findById(id);
-        if (!user.isPresent()) {
-            throw new NoSuchElementException(String.format("User with id '%s' does not exist", id));
-        }
-        repo.deleteById(id);
-    }
-
-    public List<ChatUser> getAllUsers() {
-        return repo.findAll();
+    private ChatUser findUserByIdOrElseThrow(Long userId) {
+        return repo.findById(userId).orElseThrow(() ->
+                new NoSuchElementException(String.format("User with id '%s' does not exist", userId)));
     }
 
 }
