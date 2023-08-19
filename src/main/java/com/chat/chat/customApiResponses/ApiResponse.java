@@ -1,5 +1,8 @@
 package com.chat.chat.customApiResponses;
 
+import org.springframework.stereotype.Component;
+
+@Component
 public class ApiResponse {
 
     private Object data;
