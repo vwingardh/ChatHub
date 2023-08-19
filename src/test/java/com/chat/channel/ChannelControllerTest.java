@@ -3,6 +3,7 @@ package com.chat.channel;
 import com.chat.chat.ChatApplication;
 import com.chat.chat.channel.ChannelService;
 import com.chat.chat.channel.ChannelController;
+import com.chat.chat.customApiResponses.ApiResponse;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
@@ -21,13 +22,13 @@ public class ChannelControllerTest {
 
     @MockBean
     protected ChannelService service;
-
+    @MockBean
+    protected ApiResponse response;
 
     @Test
     void testGetStatusCode200() throws Exception {
         this.mvc.perform(MockMvcRequestBuilders.get("/api/channel-status"))
                 .andExpect(status().isOk());
     }
-
 
 }

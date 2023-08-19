@@ -6,7 +6,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-
 import java.net.URI;
 import java.util.List;
 import java.util.NoSuchElementException;
@@ -16,22 +15,22 @@ import java.util.NoSuchElementException;
 public class MessageController {
 
     private final MessageService service;
+    private final ApiResponse response;
 
     @Autowired
-    public MessageController(MessageService service) {
+    public MessageController(MessageService service, ApiResponse response) {
         this.service = service;
+        this.response = response;
     }
 
     @GetMapping("message-status")
     public ResponseEntity<ApiResponse> getStatusCode200() {
-        ApiResponse response = new ApiResponse();
         response.setStatus("API is operational");
         return ResponseEntity.ok().body(response);
     }
 
     @GetMapping("messages/{id}")
     public ResponseEntity<ApiResponse> getMessageById(@PathVariable String id) {
-        ApiResponse response = new ApiResponse();
         try {
             Long convertedId = Long.valueOf(id);
             Message message = service.getMessageById(convertedId);
@@ -45,7 +44,6 @@ public class MessageController {
 
     @GetMapping("messages/user/{userId}/channel/{channelId}")
     public ResponseEntity<ApiResponse> getMessagesByUserIdChannelId(@PathVariable String userId, @PathVariable String channelId) {
-        ApiResponse response = new ApiResponse();
         try {
             List<Message> messages = service.getMessagesByUserIdChannelId(Long.valueOf(userId), Long.valueOf(channelId));
             response.setData(messages);
@@ -58,7 +56,6 @@ public class MessageController {
 
     @GetMapping("messages/channel/{channelId}")
     public ResponseEntity<ApiResponse> getMessagesByChannelId(@PathVariable String channelId) {
-        ApiResponse response = new ApiResponse();
         try {
             List<Message> messages = service.getMessagesByChannelId(Long.valueOf(channelId));
             response.setData(messages);
@@ -69,10 +66,8 @@ public class MessageController {
         }
     }
 
-
     @PostMapping("messages")
     public ResponseEntity<ApiResponse> createMessage(@RequestBody MessageDtoRequest messageDto) {
-        ApiResponse response = new ApiResponse();
         try {
             Message newMessage = service.createMessage(messageDto.messageText(), messageDto.userId(), messageDto.channelId());
             response.setData(newMessage);
@@ -87,4 +82,5 @@ public class MessageController {
             return ResponseEntity.badRequest().body(response);
         }
     }
+
 }

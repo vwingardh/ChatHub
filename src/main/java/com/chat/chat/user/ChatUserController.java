@@ -7,7 +7,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-
 import java.net.URI;
 import java.util.List;
 
@@ -16,15 +15,16 @@ import java.util.List;
 public class ChatUserController {
 
     private final ChatUserService service;
+    private final ApiResponse response;
 
     @Autowired
-    public ChatUserController(ChatUserService service) {
+    public ChatUserController(ChatUserService service, ApiResponse response) {
         this.service = service;
+        this.response = response;
     }
 
     @GetMapping("user-status")
     public ResponseEntity<ApiResponse> getStatus200() {
-        ApiResponse response = new ApiResponse();
         response.setStatus("API is operational");
         return ResponseEntity.ok().body(response);
     }
@@ -36,7 +36,6 @@ public class ChatUserController {
 
     @PostMapping("users")
     public ResponseEntity<ApiResponse> createUser(@RequestBody ChatUserDto userDto) {
-        ApiResponse response = new ApiResponse();
         try {
             ChatUser newUser = service.createUser(userDto.username());
             response.setData(newUser);
