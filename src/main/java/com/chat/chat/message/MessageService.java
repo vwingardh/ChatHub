@@ -10,20 +10,19 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import java.util.List;
 import java.util.NoSuchElementException;
-import java.util.Optional;
 
 @Service
 @Transactional
 public class MessageService {
 
     private final MessageRepository messageRepo;
-    private final ChannelRepository chatRepo;
+    private final ChannelRepository channelRepo;
     private final ChatUserRepository userRepo;
 
     @Autowired
-    public MessageService(MessageRepository messageRepo, ChannelRepository chatRepo, ChatUserRepository userRepo) {
+    public MessageService(MessageRepository messageRepo, ChannelRepository channelRepo, ChatUserRepository userRepo) {
         this.messageRepo = messageRepo;
-        this.chatRepo = chatRepo;
+        this.channelRepo = channelRepo;
         this.userRepo = userRepo;
     }
 
@@ -31,57 +30,49 @@ public class MessageService {
         if (text.length() >= 501) {
             throw new MessageExceedsMaximumException();
         }
-        Optional<ChatUser> user = userRepo.findById(userId);
-        if (!user.isPresent()) {
-            throw new NoSuchElementException(String.format("User with id '%s' does not exist", userId));
-        }
-        Optional<Channel> channel = chatRepo.findById(channelId);
-        if (!channel.isPresent()) {
-            throw new NoSuchElementException(String.format("Channel with id '%s' does not exist", channelId));
-        }
+        ChatUser user = findUserByIdOrThrow(userId);
+        Channel channel = findChannelByIdOrThrow(channelId);
+
         Message message = new Message();
         message.setMessageText(text);
-        message.setChannel(chatRepo.findById(channelId).get());
-        message.setSender(userRepo.findById(userId).get());
+        message.setChannel(channel);
+        message.setSender(user);
         return messageRepo.save(message);
     }
 
-    public void deleteMessageById(Long id) throws NoSuchElementException {
-        Optional<Message> message = messageRepo.findById(id);
-        if (!message.isPresent()) {
-            throw new NoSuchElementException(String.format("Message with id '%s' does not exist", id));
-        }
-        messageRepo.deleteById(id);
+    public void deleteMessageById(Long messageId) throws NoSuchElementException {
+        Message message = findMessageByIdOrThrow(messageId);
+        messageRepo.deleteById(message.getId());
     }
 
-    public Message getMessageById(Long id) throws NoSuchElementException {
-        Optional<Message> message = messageRepo.findById(id);
-        if (!message.isPresent()) {
-            throw new NoSuchElementException(String.format("Message with id '%s' does not exist", id));
-        }
-        return message.get();
+    public Message getMessageById(Long messageId) throws NoSuchElementException {
+        return findMessageByIdOrThrow(messageId);
     }
 
     public List<Message> getMessagesByUserIdChannelId(Long userId, Long channelId) throws NoSuchElementException {
-        Optional<ChatUser> user = userRepo.findById(userId);
-        if (!user.isPresent()) {
-            throw new NoSuchElementException(String.format("User with id '%s' does not exist", userId));
-        }
-        Optional<Channel> channel = chatRepo.findById(channelId);
-        if (!channel.isPresent()) {
-            throw new NoSuchElementException(String.format("Channel with id '%s' does not exist", channelId));
-        }
-        List<Message> messages = messageRepo.findMessageBySenderAndChannel(user.get(), channel.get());
-        return messages;
+        ChatUser user = findUserByIdOrThrow(userId);
+        Channel channel = findChannelByIdOrThrow(channelId);
+        return messageRepo.findMessageBySenderAndChannel(user, channel);
     }
 
     public List<Message> getMessagesByChannelId(Long channelId) throws NoSuchElementException {
-        Optional<Channel> channel = chatRepo.findById(channelId);
-        if (!channel.isPresent()) {
-            throw new NoSuchElementException(String.format("Channel with id '%s' does not exist", channelId));
-        }
-        List<Message> messageList = messageRepo.findMessageByChannel(channel.get());
-        return messageList;
+        Channel channel = findChannelByIdOrThrow(channelId);
+        return messageRepo.findMessageByChannel(channel);
+    }
+
+    private ChatUser findUserByIdOrThrow(Long userId) {
+        return userRepo.findById(userId).orElseThrow(() ->
+                new NoSuchElementException(String.format("User with id '%s' does not exist", userId)));
+    }
+
+    private Channel findChannelByIdOrThrow(Long channelId) {
+        return channelRepo.findById(channelId).orElseThrow(() ->
+                new NoSuchElementException(String.format("Channel with id '%s' does not exist", channelId)));
+    }
+
+    private Message findMessageByIdOrThrow(Long messageId) {
+        return messageRepo.findById(messageId).orElseThrow(() ->
+                new NoSuchElementException(String.format("Message with id '%s' does not exist", messageId)));
     }
 
 }
