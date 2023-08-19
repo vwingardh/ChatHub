@@ -13,7 +13,7 @@ https://github.com/vwingardh/ChatHub/assets/101557392/6dbf71e8-630f-496d-ada8-a0
 
 ## Teach Stack
 * **Backend:** Java, Spring Framework
-* **Frontend:** Next.js, HTML, CSS, Material UI
+* **Frontend:** Next.js, TypeScript, HTML, CSS, Material UI
 * **Database:** PostgreSQL for persistence, Redis and Lettuce for active user tracking
 * **Real-time Communication:** WebSockets, SockJS
 * **Containerization:** Docker
