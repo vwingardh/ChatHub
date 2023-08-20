@@ -11,7 +11,7 @@ https://github.com/vwingardh/ChatHub/assets/101557392/6dbf71e8-630f-496d-ada8-a0
 * **Persistent Messaging:** Never lose a message. All your conversations are saved to the database.
 * **Active Users Tracker:** Redis-backed active user tracking.
 
-## Teach Stack
+## Tech Stack
 * **Backend:** Java, Spring Framework
 * **Frontend:** Next.js, TypeScript, HTML, CSS, Material UI
 * **Database:** PostgreSQL for persistence, Redis and Lettuce for active user tracking
@@ -40,14 +40,14 @@ docker-compose up -d
 3. Backend Setup:
 Navigate to the backend directory and run the Spring Boot application:
 ```
-cd backend
+cd src
 ./mvnw spring-boot:run
 ```
 
 4. Frontend Setup:
 Navigate to the frontend directory and install the dependencies:
 ```
-cd frontend
+cd client
 npm install
 ```
 
